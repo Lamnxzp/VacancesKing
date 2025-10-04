@@ -1,0 +1,13 @@
+User-agent: Bytespider
+Disallow: /
+
+User-agent: Baiduspider
+Disallow: /
+
+User-agent: Baiduspider-render
+Disallow: /
+
+User-agent: *
+Allow: /
+
+Sitemap: https://vacancesking.vercel.app/sitemap.xml

@@ -1,0 +1,119 @@
+/* Rainbow scroll animation */
+@keyframes rainbow-scroll {
+  0% { background-position: 0% 50%; }
+  100% { background-position: 200% 50%; }
+}
+
+/* Rainbow gradient text variants */
+.rainbow-christmas-gradient-text {
+  font-weight: bold;
+  background: linear-gradient(90deg, #B22222, #FF6347, #228B22, #FF6347, #B22222);
+  background-size: 200%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: rainbow-scroll 1.5s linear infinite;
+}
+
+.rainbow-winter-gradient-text {
+  font-weight: bold;
+  background: linear-gradient(90deg, #F2F2F2, #B3D5F2, #5CACF2, #3D9DF2, #5CACF2, #B3D5F2, #F2F2F2);
+  background-size: 200%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: rainbow-scroll 1.5s linear infinite;
+}
+
+.rainbow-spring-gradient-text {
+  font-weight: bold;
+  background: linear-gradient(90deg, #FBC2EB, #FFDEE9, #A6C1EE, #B8E994, #A6C1EE, #FFDEE9, #FBC2EB);
+  background-size: 200%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: rainbow-scroll 1.5s linear infinite;
+}
+
+.rainbow-sky-gradient-text {
+  font-weight: bold;
+  background: linear-gradient(90deg, #E0FFFF, #B0E0E6, #87CEFA, #00BFFF, #87CEFA, #B0E0E6, #E0FFFF);
+  background-size: 200%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: rainbow-scroll 1.5s linear infinite;
+}
+
+.rainbow-summer-gradient-text {
+  font-weight: bold;
+  background: linear-gradient(90deg, #FFD700, #FFA500, #FF6347, #FF4500, #FF6347, #FFA500, #FFD700);
+  background-size: 200%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: rainbow-scroll 1.5s linear infinite;
+}
+
+.rainbow-autumn-gradient-text {
+  font-weight: bold;
+  background: linear-gradient(90deg, #FF7F50, #FFB347, #8B4513, #FFB347, #FF7F50);
+  background-size: 200%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: rainbow-scroll 1.5s linear infinite;
+}
+
+/* Static gradient text variants */
+.christmas-gradient-text {
+  background: linear-gradient(90deg, #B22222, #FF6347 40%, #228B22);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.winter-gradient-text {
+  background: linear-gradient(90deg, #CEDEF2, #95A7BF 50%, #68788C);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.spring-gradient-text {
+  background: linear-gradient(90deg, #FBC2EB, #A6C1EE 50%, #B8E994);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.sky-gradient-text {
+  background: linear-gradient(90deg, #87CEFA, #B0E0E6 50%, #E0FFFF);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.summer-gradient-text {
+  background: linear-gradient(90deg, #FFD700, #FF8C00 50%, #FF4500);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.autumn-gradient-text {
+  background: linear-gradient(90deg, #FF7F50, #FFB347 50%, #8B4513);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Loading animation */
+.loading-text {
+  animation: fadeOut 1s infinite alternate;
+}
+
+@keyframes fadeOut {
+  from { opacity: 1; }
+  to { opacity: 0.5; }
+}
