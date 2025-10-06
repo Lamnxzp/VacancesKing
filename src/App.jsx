@@ -176,7 +176,7 @@ function App() {
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen text-center px-5 relative antialiased bg-black">      
-      <h1 className="mb-2.5 text-[2.5rem] border-2 border-dashed border-white/25 rounded-[10px] p-2.5 flex items-center justify-center flex-wrap max-md:text-[1.8rem]">
+      <h1 className="mb-2.5 text-[2.5rem] border-2 border-dashed border-white/25 rounded-[10px] p-2.5 flex items-center justify-center flex-row max-md:text-[1.8rem]">
         <span className={`font-bold ${vacationStyle?.style || ""}`}>
           {vacation?.name}
         </span>
