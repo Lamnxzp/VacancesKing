@@ -1,13 +1,24 @@
 /* Rainbow scroll animation */
 @keyframes rainbow-scroll {
-  0% { background-position: 0% 50%; }
-  100% { background-position: 200% 50%; }
+  0% {
+    background-position: 0% 50%;
+  }
+  100% {
+    background-position: 200% 50%;
+  }
 }
 
 /* Rainbow gradient text variants */
 .rainbow-christmas-gradient-text {
   font-weight: bold;
-  background: linear-gradient(90deg, #B22222, #FF6347, #228B22, #FF6347, #B22222);
+  background: linear-gradient(
+    90deg,
+    #b22222,
+    #ff6347,
+    #228b22,
+    #ff6347,
+    #b22222
+  );
   background-size: 200%;
   -webkit-background-clip: text;
   background-clip: text;
@@ -17,7 +28,16 @@
 
 .rainbow-winter-gradient-text {
   font-weight: bold;
-  background: linear-gradient(90deg, #F2F2F2, #B3D5F2, #5CACF2, #3D9DF2, #5CACF2, #B3D5F2, #F2F2F2);
+  background: linear-gradient(
+    90deg,
+    #f2f2f2,
+    #b3d5f2,
+    #5cacf2,
+    #3d9df2,
+    #5cacf2,
+    #b3d5f2,
+    #f2f2f2
+  );
   background-size: 200%;
   -webkit-background-clip: text;
   background-clip: text;
@@ -27,7 +47,16 @@
 
 .rainbow-spring-gradient-text {
   font-weight: bold;
-  background: linear-gradient(90deg, #FBC2EB, #FFDEE9, #A6C1EE, #B8E994, #A6C1EE, #FFDEE9, #FBC2EB);
+  background: linear-gradient(
+    90deg,
+    #fbc2eb,
+    #ffdee9,
+    #a6c1ee,
+    #b8e994,
+    #a6c1ee,
+    #ffdee9,
+    #fbc2eb
+  );
   background-size: 200%;
   -webkit-background-clip: text;
   background-clip: text;
@@ -37,7 +66,16 @@
 
 .rainbow-sky-gradient-text {
   font-weight: bold;
-  background: linear-gradient(90deg, #E0FFFF, #B0E0E6, #87CEFA, #00BFFF, #87CEFA, #B0E0E6, #E0FFFF);
+  background: linear-gradient(
+    90deg,
+    #e0ffff,
+    #b0e0e6,
+    #87cefa,
+    #00bfff,
+    #87cefa,
+    #b0e0e6,
+    #e0ffff
+  );
   background-size: 200%;
   -webkit-background-clip: text;
   background-clip: text;
@@ -47,7 +85,16 @@
 
 .rainbow-summer-gradient-text {
   font-weight: bold;
-  background: linear-gradient(90deg, #FFD700, #FFA500, #FF6347, #FF4500, #FF6347, #FFA500, #FFD700);
+  background: linear-gradient(
+    90deg,
+    #ffd700,
+    #ffa500,
+    #ff6347,
+    #ff4500,
+    #ff6347,
+    #ffa500,
+    #ffd700
+  );
   background-size: 200%;
   -webkit-background-clip: text;
   background-clip: text;
@@ -57,7 +104,14 @@
 
 .rainbow-autumn-gradient-text {
   font-weight: bold;
-  background: linear-gradient(90deg, #FF7F50, #FFB347, #8B4513, #FFB347, #FF7F50);
+  background: linear-gradient(
+    90deg,
+    #ff7f50,
+    #ffb347,
+    #8b4513,
+    #ffb347,
+    #ff7f50
+  );
   background-size: 200%;
   -webkit-background-clip: text;
   background-clip: text;
@@ -67,42 +121,42 @@
 
 /* Static gradient text variants */
 .christmas-gradient-text {
-  background: linear-gradient(90deg, #B22222, #FF6347 40%, #228B22);
+  background: linear-gradient(90deg, #b22222, #ff6347 40%, #228b22);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
 .winter-gradient-text {
-  background: linear-gradient(90deg, #CEDEF2, #95A7BF 50%, #68788C);
+  background: linear-gradient(90deg, #cedef2, #95a7bf 50%, #68788c);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
 .spring-gradient-text {
-  background: linear-gradient(90deg, #FBC2EB, #A6C1EE 50%, #B8E994);
+  background: linear-gradient(90deg, #fbc2eb, #a6c1ee 50%, #b8e994);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
 .sky-gradient-text {
-  background: linear-gradient(90deg, #87CEFA, #B0E0E6 50%, #E0FFFF);
+  background: linear-gradient(90deg, #87cefa, #b0e0e6 50%, #e0ffff);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
 .summer-gradient-text {
-  background: linear-gradient(90deg, #FFD700, #FF8C00 50%, #FF4500);
+  background: linear-gradient(90deg, #ffd700, #ff8c00 50%, #ff4500);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
 .autumn-gradient-text {
-  background: linear-gradient(90deg, #FF7F50, #FFB347 50%, #8B4513);
+  background: linear-gradient(90deg, #ff7f50, #ffb347 50%, #8b4513);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -114,6 +168,26 @@
 }
 
 @keyframes fadeOut {
-  from { opacity: 1; }
-  to { opacity: 0.5; }
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0.5;
+  }
+}
+
+
+html, body, * {
+  scrollbar-width: none;        /* Firefox */
+  -ms-overflow-style: none;     /* IE et ancien Edge */
+}
+
+html::-webkit-scrollbar,
+body::-webkit-scrollbar,
+*::-webkit-scrollbar {
+  display: none;                /* Chrome, Safari, Edge Chromium */
+}
+
+::-webkit-calendar-picker-indicator {
+  filter: invert(1);
 }

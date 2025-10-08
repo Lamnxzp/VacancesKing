@@ -1,30 +1,31 @@
 import { useState, useEffect, useMemo } from "react";
 import "./App.css";
+import SettingsDialog from "./components/SettingsDialog";
 
 const VACATION_STYLES = {
   "Vacances de la Toussaint": {
     style: "autumn-gradient-text",
-    emoji: "fallen-leaf"
+    emoji: "fallen-leaf",
   },
   "Vacances de Noël": {
     style: "christmas-gradient-text",
-    emoji: "santa_beer"
+    emoji: "santa_beer",
   },
   "Vacances d'Hiver": {
     style: "winter-gradient-text",
-    emoji: "snowflake"
+    emoji: "snowflake",
   },
   "Vacances de Printemps": {
     style: "spring-gradient-text",
-    emoji: "blossom"
+    emoji: "blossom",
   },
   "Pont de l'Ascension": {
     style: "sky-gradient-text",
-    emoji: "cloud"
+    emoji: "cloud",
   },
   "Début des Vacances d'Été": {
     style: "summer-gradient-text",
-    emoji: "sun-with-face"
+    emoji: "sun-with-face",
   },
 };
 
@@ -48,6 +49,8 @@ function App() {
   const [isLoading, setIsLoading] = useState(true);
   const [dots, setDots] = useState("");
 
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+
   const progressBarColor = useMemo(() => {
     if (vacation?.name && VACATION_STYLES[vacation.name]?.style) {
       const gradientStyle = VACATION_STYLES[vacation.name].style;
@@ -60,7 +63,7 @@ function App() {
     if (!isLoading) return;
 
     const interval = setInterval(() => {
-      setDots(prev => prev.length < 3 ? prev + "." : "");
+      setDots((prev) => (prev.length < 3 ? prev + "." : ""));
     }, 300);
 
     return () => clearInterval(interval);
@@ -69,13 +72,24 @@ function App() {
   useEffect(() => {
     const fetchVacation = async () => {
       try {
-        const currentYear = new Date().getFullYear();
-        const schoolYear = new Date().getMonth() >= 8
-          ? `${currentYear}-${currentYear + 1}`
-          : `${currentYear - 1}-${currentYear}`;
+        const settings = JSON.parse(localStorage.getItem("settings") || "{}");
+        const vacationOverrides = settings.vacationsOverrides || {};
 
-        const baseUrl = "https://data.education.gouv.fr/api/explore/v2.1/catalog/datasets/fr-en-calendrier-scolaire/records";
-        const url = `${baseUrl}?refine=zones:${encodeURIComponent(`Zone ${ZONE.toUpperCase()}`)}&refine=annee_scolaire:${encodeURIComponent(schoolYear)}&group_by=${encodeURIComponent("description,start_date,end_date,zones")}&limit=20`;
+        const currentYear = new Date().getFullYear();
+        const schoolYear =
+          new Date().getMonth() >= 8
+            ? `${currentYear}-${currentYear + 1}`
+            : `${currentYear - 1}-${currentYear}`;
+
+        const baseUrl =
+          "https://data.education.gouv.fr/api/explore/v2.1/catalog/datasets/fr-en-calendrier-scolaire/records";
+        const url = `${baseUrl}?refine=zones:${encodeURIComponent(
+          `Zone ${ZONE.toUpperCase()}`
+        )}&refine=annee_scolaire:${encodeURIComponent(
+          schoolYear
+        )}&group_by=${encodeURIComponent(
+          "description,start_date,end_date,zones"
+        )}&limit=20`;
 
         const response = await fetch(url);
         if (!response.ok) throw new Error("Failed to fetch");
@@ -85,18 +99,27 @@ function App() {
 
         const now = new Date();
         const allVacations = json.results
-          .map(result => ({
-            name: result.description,
-            start: new Date(result.start_date),
-            end: new Date(result.end_date)
-          }))
+          .map((result) => {
+            const override = vacationOverrides[result.description];
+            return {
+              name: result.description,
+              start: new Date(
+                override?.start_date || result.start_date
+              ),
+              end: new Date(
+                override?.end_date || result.end_date
+              ),
+            };
+          })
           .sort((a, b) => a.start - b.start);
 
-        const upcomingVacations = allVacations.filter(v => v.start > now);
+        const upcomingVacations = allVacations.filter((v) => v.start > now);
         if (!upcomingVacations.length) return;
 
         const nextVacation = upcomingVacations[0];
-        const nextVacationIndex = allVacations.findIndex(v => v.start.getTime() === nextVacation.start.getTime());
+        const nextVacationIndex = allVacations.findIndex(
+          (v) => v.start.getTime() === nextVacation.start.getTime()
+        );
 
         let progressStart;
         if (nextVacationIndex === 0) {
@@ -108,7 +131,7 @@ function App() {
         setVacation({
           name: nextVacation.name,
           start: nextVacation.start,
-          last: progressStart
+          last: progressStart,
         });
       } catch (error) {
         console.error("Error fetching vacation data:", error);
@@ -127,8 +150,11 @@ function App() {
       const now = new Date();
       const totalDuration = vacation.start - vacation.last;
       const elapsedDuration = now - vacation.last;
-      const percentage = Math.min(100, Math.max(0, (elapsedDuration / totalDuration) * 100));
-      
+      const percentage = Math.min(
+        100,
+        Math.max(0, (elapsedDuration / totalDuration) * 100)
+      );
+
       setProgress(percentage);
 
       const remainingTime = vacation.start - now;
@@ -140,7 +166,9 @@ function App() {
       } else if (remainingTime < 24 * 60 * 60 * 1000) {
         setTimeLeft(`${Math.floor(remainingTime / (60 * 60 * 1000))} heures`);
       } else {
-        setTimeLeft(`${Math.floor(remainingTime / (24 * 60 * 60 * 1000))} jours`);
+        setTimeLeft(
+          `${Math.floor(remainingTime / (24 * 60 * 60 * 1000))} jours`
+        );
       }
     };
 
@@ -149,10 +177,16 @@ function App() {
     const hours = onePercentDuration / (1000 * 60 * 60);
 
     if (hours >= 1) {
-      setRate(`1% ≈ ${Math.round(hours)} heure${Math.round(hours) > 1 ? 's' : ''}`);
+      setRate(
+        `1% ≈ ${Math.round(hours)} heure${Math.round(hours) > 1 ? "s" : ""}`
+      );
     } else {
       const minutes = onePercentDuration / (1000 * 60);
-      setRate(`1% ≈ ${Math.round(minutes)} minute${Math.round(minutes) > 1 ? 's' : ''}`);
+      setRate(
+        `1% ≈ ${Math.round(minutes)} minute${
+          Math.round(minutes) > 1 ? "s" : ""
+        }`
+      );
     }
 
     const interval = setInterval(calculateProgress, UPDATE_INTERVAL);
@@ -175,7 +209,7 @@ function App() {
   const isOnVacation = progress >= 100;
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen text-center px-5 relative antialiased bg-black">      
+    <div className="flex flex-col items-center justify-center min-h-screen text-center px-5 relative antialiased bg-black">
       <h1 className="mb-2.5 text-[2.5rem] border-2 border-dashed border-white/25 rounded-[10px] p-2.5 flex items-center justify-center flex-wrap max-md:text-[1.8rem]">
         <span className={`font-bold ${vacationStyle?.style || ""}`}>
           {vacation?.name}
@@ -204,7 +238,7 @@ function App() {
           className="h-full transition-[width] duration-1000 ease-linear"
           style={{
             width: `${progress}%`,
-            backgroundColor: progressBarColor
+            backgroundColor: progressBarColor,
           }}
         />
       </div>
@@ -222,7 +256,11 @@ function App() {
         ) : (
           <>
             Plus que{" "}
-            <span className={vacationStyle?.style ? `rainbow-${vacationStyle.style}` : ""}>
+            <span
+              className={
+                vacationStyle?.style ? `rainbow-${vacationStyle.style}` : ""
+              }
+            >
               {timeLeft}
             </span>{" "}
             avant les vacances
@@ -230,9 +268,19 @@ function App() {
         )}
       </div>
 
-      <p className="absolute bottom-5 w-full text-center text-gray-500 opacity-30 text-base font-[Arial,sans-serif]">
-        zaza paye pas
-      </p>
+      <div className="absolute bottom-5 w-full px-5 flex items-center">
+        <div className="pointer-events-none absolute inset-x-0 text-center text-[#808080] opacity-30 text-base font-[Arial,sans-serif]">
+          zaza paye pas
+        </div>
+        <button
+          onClick={() => setIsSettingsOpen(true)}
+          className="ml-auto relative z-10 text-[#808080] hover:text-white/80 px-3 py-1.5 border-2 border-dashed border-[#808080]/30 rounded-[10px] hover:border-white/40 opacity-70 hover:opacity-90 transition-all duration-300 text-sm font-[Arial,sans-serif] focus:outline-none cursor-pointer"
+        >
+          Paramètres
+        </button>
+
+        <SettingsDialog isOpen={isSettingsOpen} onClose={() => setIsSettingsOpen(false)} />
+      </div>
     </div>
   );
 }
