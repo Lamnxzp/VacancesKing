@@ -164,11 +164,12 @@ export default function SettingsDialog({ isOpen, onClose }) {
                         </div>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                           <div>
-                            <label className="block text-white/60 text-sm mb-1">
+                            {/* <label className="block text-white/60 text-sm mb-1">
                               Date de début
-                            </label>
+                            </label> */}
                             <DateTimePicker
-                              key={vacationOverrides[vacationName]?.start_date || "empty-start-" + vacationName}
+                              key={"start-" + vacationName}
+                              label="Date de début"
                               value={
                                 vacationOverrides[vacationName]?.start_date ||
                                 ""
@@ -183,11 +184,12 @@ export default function SettingsDialog({ isOpen, onClose }) {
                             />
                           </div>
                           <div>
-                            <label className="block text-white/60 text-sm mb-1">
+                            {/* <label className="block text-white/60 text-sm mb-1">
                               Date de fin
-                            </label>
+                            </label> */}
                             <DateTimePicker
-                              key={vacationOverrides[vacationName]?.end_date || "empty-end-" + vacationName}
+                              key={"end-" + vacationName}
+                              label="Date de fin"
                               value={
                                 vacationOverrides[vacationName]?.end_date || ""
                               }
