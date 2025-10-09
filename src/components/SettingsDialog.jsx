@@ -9,10 +9,9 @@ import {
   TabPanels,
 } from "@headlessui/react";
 import { Fragment, useState, useEffect } from "react";
+import { DateTimePicker } from "./DateTimePicker.jsx";
 
-const SETTINGS_TABS = [
-  { id: "dates-tab", label: "Dates" },
-];
+const SETTINGS_TABS = [{ id: "dates-tab", label: "Dates" }];
 
 const VACATION_NAMES = [
   "Vacances de la Toussaint",
@@ -168,26 +167,37 @@ export default function SettingsDialog({ isOpen, onClose }) {
                             <label className="block text-white/60 text-sm mb-1">
                               Date de début
                             </label>
-                            <input
-                              type="datetime-local"
-                              onChange={(e) =>
-                                handleDateChange(vacationName, "start_date", e.target.value)
+                            <DateTimePicker
+                              key={vacationOverrides[vacationName]?.start_date || "empty-start-" + vacationName}
+                              value={
+                                vacationOverrides[vacationName]?.start_date ||
+                                ""
                               }
-                              value={vacationOverrides[vacationName]?.start_date || ""}
-                              className="w-full bg-zinc-900 border border-white/20 rounded-lg px-4 py-2 text-white placeholder-white/40 focus:outline-none focus:border-white/40"
+                              onChange={(value) =>
+                                handleDateChange(
+                                  vacationName,
+                                  "start_date",
+                                  value
+                                )
+                              }
                             />
                           </div>
                           <div>
                             <label className="block text-white/60 text-sm mb-1">
                               Date de fin
                             </label>
-                            <input
-                              type="datetime-local"
-                              onChange={(e) =>
-                                handleDateChange(vacationName, "end_date", e.target.value)
+                            <DateTimePicker
+                              key={vacationOverrides[vacationName]?.end_date || "empty-end-" + vacationName}
+                              value={
+                                vacationOverrides[vacationName]?.end_date || ""
                               }
-                              value={vacationOverrides[vacationName]?.end_date || ""}
-                              className="w-full bg-zinc-900 border border-white/20 rounded-lg px-4 py-2 text-white placeholder-white/40 focus:outline-none focus:border-white/40"
+                              onChange={(value) =>
+                                handleDateChange(
+                                  vacationName,
+                                  "end_date",
+                                  value
+                                )
+                              }
                             />
                           </div>
                         </div>

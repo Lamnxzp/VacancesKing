@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo } from "react";
 import "./App.css";
 import SettingsDialog from "./components/SettingsDialog";
+import VacationProgress from "./components/VacationProgress";
 
 const VACATION_STYLES = {
   "Vacances de la Toussaint": {
@@ -42,13 +43,9 @@ const ZONE = "C";
 const UPDATE_INTERVAL = 30;
 
 function App() {
-  const [progress, setProgress] = useState(0);
-  const [timeLeft, setTimeLeft] = useState("");
-  const [rate, setRate] = useState("");
   const [vacation, setVacation] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [dots, setDots] = useState("");
-
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
 
   const progressBarColor = useMemo(() => {
@@ -143,58 +140,6 @@ function App() {
     fetchVacation();
   }, []);
 
-  useEffect(() => {
-    if (!vacation) return;
-
-    const calculateProgress = () => {
-      const now = new Date();
-      const totalDuration = vacation.start - vacation.last;
-      const elapsedDuration = now - vacation.last;
-      const percentage = Math.min(
-        100,
-        Math.max(0, (elapsedDuration / totalDuration) * 100)
-      );
-
-      setProgress(percentage);
-
-      const remainingTime = vacation.start - now;
-
-      if (remainingTime < 60 * 1000) {
-        setTimeLeft(`${Math.floor(remainingTime / 1000)} secondes`);
-      } else if (remainingTime < 60 * 60 * 1000) {
-        setTimeLeft(`${Math.floor(remainingTime / (60 * 1000))} minutes`);
-      } else if (remainingTime < 24 * 60 * 60 * 1000) {
-        setTimeLeft(`${Math.floor(remainingTime / (60 * 60 * 1000))} heures`);
-      } else {
-        setTimeLeft(
-          `${Math.floor(remainingTime / (24 * 60 * 60 * 1000))} jours`
-        );
-      }
-    };
-
-    const totalDuration = vacation.start - vacation.last;
-    const onePercentDuration = totalDuration / 100;
-    const hours = onePercentDuration / (1000 * 60 * 60);
-
-    if (hours >= 1) {
-      setRate(
-        `1% ≈ ${Math.round(hours)} heure${Math.round(hours) > 1 ? "s" : ""}`
-      );
-    } else {
-      const minutes = onePercentDuration / (1000 * 60);
-      setRate(
-        `1% ≈ ${Math.round(minutes)} minute${
-          Math.round(minutes) > 1 ? "s" : ""
-        }`
-      );
-    }
-
-    const interval = setInterval(calculateProgress, UPDATE_INTERVAL);
-    calculateProgress();
-
-    return () => clearInterval(interval);
-  }, [vacation]);
-
   if (isLoading) {
     return (
       <div className="flex justify-center items-center min-h-screen">
@@ -206,7 +151,6 @@ function App() {
   }
 
   const vacationStyle = vacation?.name && VACATION_STYLES[vacation.name];
-  const isOnVacation = progress >= 100;
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen text-center px-5 relative antialiased bg-black">
@@ -223,55 +167,13 @@ function App() {
         )}
       </h1>
 
-      <h1 className="mb-[-5px] text-[2.5rem] max-md:text-[2rem]">
-        <span className="inline-block min-w-[250px] max-md:min-w-[200px]">
-          {isOnVacation ? 100 : progress.toFixed(6)}%
-        </span>
-      </h1>
-
-      {!isOnVacation && rate && (
-        <div className="mb-5 text-sm text-[#808080] text-center">({rate})</div>
-      )}
-
-      <div className="w-[95%] max-w-[1200px] h-[60px] border-[5px] border-white relative bg-black shadow-[0_0_0_3px_black,0_0_0_7px_white]">
-        <div
-          className="h-full transition-[width] duration-1000 ease-linear"
-          style={{
-            width: `${progress}%`,
-            backgroundColor: progressBarColor,
-          }}
-        />
-      </div>
-
-      <div className="mt-[30px] text-[1.7rem] max-md:text-[1.4rem]">
-        {isOnVacation ? (
-          <>
-            <span className="rainbow-text">En vacances !</span>
-            <img
-              src="/emojis/party_popper.avif"
-              alt="party popper emoji"
-              className="ml-1.5 h-[1.25em] w-auto align-middle inline-block"
-            />
-          </>
-        ) : (
-          <>
-            Plus que{" "}
-            <span
-              className={
-                vacationStyle?.style ? `rainbow-${vacationStyle.style}` : ""
-              }
-            >
-              {timeLeft}
-            </span>{" "}
-            avant les vacances
-          </>
-        )}
-      </div>
+      <VacationProgress vacation={vacation} progressBarColor={progressBarColor} vacationStyle={vacationStyle} />
 
       <div className="absolute bottom-5 w-full px-5 flex items-center">
         <div className="pointer-events-none absolute inset-x-0 text-center text-[#808080] opacity-30 text-base font-[Arial,sans-serif]">
           zaza paye pas
         </div>
+
         <button
           onClick={() => setIsSettingsOpen(true)}
           className="ml-auto relative z-10 text-[#808080] hover:text-white/80 px-3 py-1.5 border-2 border-dashed border-[#808080]/30 rounded-[10px] hover:border-white/40 opacity-70 hover:opacity-90 transition-all duration-300 text-sm font-[Arial,sans-serif] focus:outline-none cursor-pointer"
