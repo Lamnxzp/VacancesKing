@@ -28,7 +28,7 @@ export default function SettingsDialog({ isOpen, onClose }) {
   useEffect(() => {
     if (isOpen) {
       const settings = JSON.parse(localStorage.getItem("settings") || "{}");
-      setVacationOverrides(settings.vacationsOverrides || {});
+      setVacationOverrides(settings.vacationOverrides || {});
     }
   }, [isOpen]);
 
@@ -47,7 +47,7 @@ export default function SettingsDialog({ isOpen, onClose }) {
       "settings",
       JSON.stringify({
         ...settings,
-        vacationsOverrides: newOverrides,
+        vacationOverrides: newOverrides,
       })
     );
   };
@@ -62,7 +62,7 @@ export default function SettingsDialog({ isOpen, onClose }) {
       "settings",
       JSON.stringify({
         ...settings,
-        vacationsOverrides: newOverrides,
+        vacationOverrides: newOverrides,
       })
     );
   };

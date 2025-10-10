@@ -70,7 +70,7 @@ function App() {
     const fetchVacation = async () => {
       try {
         const settings = JSON.parse(localStorage.getItem("settings") || "{}");
-        const vacationOverrides = settings.vacationsOverrides || {};
+        const vacationOverrides = settings.vacationOverrides || {};
 
         const currentYear = new Date().getFullYear();
         const schoolYear =
