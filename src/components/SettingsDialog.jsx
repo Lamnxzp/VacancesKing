@@ -79,7 +79,7 @@ export default function SettingsDialog({ isOpen, onClose }) {
           >
             <button
               onClick={onClose}
-              className="absolute top-4 right-4 z-20 p-2 border-2 border-dashed border-white/20 rounded-lg text-white/60 hover:text-white hover:border-white/40 transition-all duration-200"
+              className="absolute top-4 right-4 z-20 p-2 border-2 border-dashed border-white/20 rounded-lg text-white/60 hover:text-white hover:border-white/40 transition-all duration-200 cursor-pointer"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
