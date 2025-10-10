@@ -2,6 +2,7 @@ import { useState, useEffect, useMemo } from "react";
 import "./App.css";
 import SettingsDialog from "./components/SettingsDialog";
 import VacationProgress from "./components/VacationProgress";
+import { getSchoolYear } from "./lib/utils";
 
 const VACATION_STYLES = {
   "Vacances de la Toussaint": {
@@ -72,11 +73,7 @@ function App() {
         const settings = JSON.parse(localStorage.getItem("settings") || "{}");
         const vacationOverrides = settings.vacationOverrides || {};
 
-        const currentYear = new Date().getFullYear();
-        const schoolYear =
-          new Date().getMonth() >= 8
-            ? `${currentYear}-${currentYear + 1}`
-            : `${currentYear - 1}-${currentYear}`;
+        const schoolYear = getSchoolYear();
 
         const baseUrl =
           "https://data.education.gouv.fr/api/explore/v2.1/catalog/datasets/fr-en-calendrier-scolaire/records";

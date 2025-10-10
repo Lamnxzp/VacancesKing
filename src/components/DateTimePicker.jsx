@@ -9,7 +9,13 @@ import {
 } from "@/components/ui/popover";
 import { TimePicker } from "./TimePicker/TimePicker.jsx";
 
-export function DateTimePicker({ value, onChange, label }) {
+export function DateTimePicker({
+  value,
+  onChange,
+  label,
+  startMonth,
+  endMonth,
+}) {
   const [open, setOpen] = React.useState(false);
   const [date, setDate] = React.useState(value ? new Date(value) : undefined);
 
@@ -70,6 +76,8 @@ export function DateTimePicker({ value, onChange, label }) {
               selected={date}
               captionLayout="dropdown"
               onSelect={handleDateChange}
+              startMonth={startMonth}
+              endMonth={endMonth}
             />
           </PopoverContent>
         </Popover>

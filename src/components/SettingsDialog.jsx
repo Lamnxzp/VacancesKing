@@ -10,6 +10,7 @@ import {
 } from "@headlessui/react";
 import { Fragment, useState, useEffect } from "react";
 import { DateTimePicker } from "./DateTimePicker.jsx";
+import { getSchoolYear } from "@/lib/utils.js";
 
 const SETTINGS_TABS = [{ id: "dates-tab", label: "Dates" }];
 
@@ -178,6 +179,8 @@ export default function SettingsDialog({ isOpen, onClose }) {
                                   value
                                 )
                               }
+                              startMonth={new Date(getSchoolYear(true)[0], 0)}
+                              endMonth={new Date(getSchoolYear(true)[1], 11)}
                             />
                           </div>
                           <div>
@@ -194,6 +197,8 @@ export default function SettingsDialog({ isOpen, onClose }) {
                                   value
                                 )
                               }
+                              startMonth={new Date(getSchoolYear(true)[0], 0)}
+                              endMonth={new Date(getSchoolYear(true)[1], 11)}
                             />
                           </div>
                         </div>

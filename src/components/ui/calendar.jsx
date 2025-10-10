@@ -17,6 +17,8 @@ function Calendar({
   buttonVariant = "ghost",
   formatters,
   components,
+  startMonth,
+  endMonth,
   ...props
 }) {
   const defaultClassNames = getDefaultClassNames();
@@ -163,6 +165,8 @@ function Calendar({
         },
         ...components,
       }}
+      startMonth={startMonth}
+      endMonth={endMonth}
       {...props}
     />
   );

@@ -48,4 +48,5 @@ function Button({ className, variant, size, asChild = false, ...props }) {
   );
 }
 
+/* eslint-disable-next-line react-refresh/only-export-components */
 export { Button, buttonVariants };
