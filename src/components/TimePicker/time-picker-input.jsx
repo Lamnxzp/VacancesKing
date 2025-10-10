@@ -3,7 +3,7 @@
 */
 
 import { Input } from "@/components/ui/input";
- 
+
 import { cn } from "@/lib/utils";
 import React from "react";
 import {
@@ -11,7 +11,7 @@ import {
   getDateByType,
   setDateByType,
 } from "./time-picker-utils";
- 
+
 const TimePickerInput = React.forwardRef(
   (
     {
@@ -34,7 +34,7 @@ const TimePickerInput = React.forwardRef(
   ) => {
     const [flag, setFlag] = React.useState(false);
     const [prevIntKey, setPrevIntKey] = React.useState("0");
- 
+
     /**
      * allow the user to enter the second digit within 2 seconds
      * otherwise start again with entering first digit
@@ -44,15 +44,15 @@ const TimePickerInput = React.forwardRef(
         const timer = setTimeout(() => {
           setFlag(false);
         }, 2000);
- 
+
         return () => clearTimeout(timer);
       }
     }, [flag]);
- 
+
     const calculatedValue = React.useMemo(() => {
       return getDateByType(date, picker);
     }, [date, picker]);
- 
+
     const calculateNewValue = (key) => {
       /*
        * If picker is '12hours' and the first digit is 0, then the second digit is automatically set to 1.
@@ -62,10 +62,10 @@ const TimePickerInput = React.forwardRef(
         if (flag && calculatedValue.slice(1, 2) === "1" && prevIntKey === "0")
           return "0" + key;
       }
- 
+
       return !flag ? "0" + key : calculatedValue.slice(1, 2) + key;
     };
- 
+
     const handleKeyDown = (e) => {
       if (e.key === "Tab") return;
       e.preventDefault();
@@ -80,7 +80,7 @@ const TimePickerInput = React.forwardRef(
       }
       if (e.key >= "0" && e.key <= "9") {
         if (picker === "12hours") setPrevIntKey(e.key);
- 
+
         const newValue = calculateNewValue(e.key);
         if (flag) onRightFocus?.();
         setFlag((prev) => !prev);
@@ -88,7 +88,7 @@ const TimePickerInput = React.forwardRef(
         setDate(setDateByType(tempDate, newValue, picker, period));
       }
     };
- 
+
     return (
       <Input
         ref={ref}
@@ -114,7 +114,7 @@ const TimePickerInput = React.forwardRef(
     );
   }
 );
- 
+
 TimePickerInput.displayName = "TimePickerInput";
- 
+
 export { TimePickerInput };

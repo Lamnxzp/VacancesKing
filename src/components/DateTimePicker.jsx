@@ -1,49 +1,49 @@
-import * as React from "react"
-import { ChevronDownIcon } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Calendar } from "@/components/ui/calendar"
+import * as React from "react";
+import { ChevronDownIcon } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Calendar } from "@/components/ui/calendar";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover"
-import { TimePicker } from "./TimePicker/TimePicker.jsx"
+} from "@/components/ui/popover";
+import { TimePicker } from "./TimePicker/TimePicker.jsx";
 
 export function DateTimePicker({ value, onChange, label }) {
-  const [open, setOpen] = React.useState(false)
-  const [date, setDate] = React.useState(value ? new Date(value) : undefined)
+  const [open, setOpen] = React.useState(false);
+  const [date, setDate] = React.useState(value ? new Date(value) : undefined);
 
   React.useEffect(() => {
     if (!value) {
-      setDate(undefined)
+      setDate(undefined);
     } else {
-      setDate(new Date(value))
+      setDate(new Date(value));
     }
-  }, [value])
+  }, [value]);
 
   const handleDateChange = (selectedDate) => {
     if (!selectedDate) {
-      setDate(undefined)
+      setDate(undefined);
       if (onChange) {
-        onChange(null)
+        onChange(null);
       }
-      setOpen(false)
-      return
+      setOpen(false);
+      return;
     }
 
-    setDate(selectedDate)
+    setDate(selectedDate);
     if (onChange) {
-      onChange(selectedDate.toISOString())
+      onChange(selectedDate.toISOString());
     }
-    setOpen(false)
-  }
+    setOpen(false);
+  };
 
   const handleTimeChange = (newDate) => {
-    setDate(newDate)
+    setDate(newDate);
     if (newDate && onChange) {
-      onChange(newDate.toISOString())
+      onChange(newDate.toISOString());
     }
-  }
+  };
 
   return (
     <div className="flex flex-col sm:flex-row flex-wrap gap-4 items-center">
@@ -64,10 +64,7 @@ export function DateTimePicker({ value, onChange, label }) {
               <ChevronDownIcon className="h-4 w-4 opacity-70" />
             </Button>
           </PopoverTrigger>
-          <PopoverContent
-            className="w-auto overflow-hidden p-0"
-            align="start"
-          >
+          <PopoverContent className="w-auto overflow-hidden p-0" align="start">
             <Calendar
               mode="single"
               selected={date}
@@ -83,5 +80,5 @@ export function DateTimePicker({ value, onChange, label }) {
         <TimePicker date={date} setDate={handleTimeChange} />
       </div>
     </div>
-  )
+  );
 }

@@ -42,7 +42,7 @@ const GRADIENT_COLORS = {
 const ZONE = "C";
 const UPDATE_INTERVAL = 30;
 
-function App() {  
+function App() {
   const [vacation, setVacation] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [dots, setDots] = useState("");
@@ -100,12 +100,8 @@ function App() {
             const override = vacationOverrides[result.description];
             return {
               name: result.description,
-              start: new Date(
-                override?.start_date || result.start_date
-              ),
-              end: new Date(
-                override?.end_date || result.end_date
-              ),
+              start: new Date(override?.start_date || result.start_date),
+              end: new Date(override?.end_date || result.end_date),
             };
           })
           .sort((a, b) => a.start - b.start);
@@ -137,7 +133,8 @@ function App() {
       }
     };
 
-    if (!vacation || !isSettingsOpen) { // refresh when the settings dialog is closed
+    if (!vacation || !isSettingsOpen) {
+      // refresh when the settings dialog is closed
       fetchVacation();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -156,7 +153,7 @@ function App() {
   const vacationStyle = vacation?.name && VACATION_STYLES[vacation.name];
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen text-center px-5 relative antialiased bg-black">      
+    <div className="flex flex-col items-center justify-center min-h-screen text-center px-5 relative antialiased bg-black">
       <h1 className="mb-2.5 text-[2.5rem] border-2 border-dashed border-white/25 rounded-[10px] p-2.5 flex items-center justify-center flex-row max-md:text-[1.8rem]">
         <span className={`font-bold ${vacationStyle?.style || ""}`}>
           {vacation?.name}
@@ -170,7 +167,11 @@ function App() {
         )}
       </h1>
 
-      <VacationProgress vacation={vacation} progressBarColor={progressBarColor} vacationStyle={vacationStyle} />
+      <VacationProgress
+        vacation={vacation}
+        progressBarColor={progressBarColor}
+        vacationStyle={vacationStyle}
+      />
 
       <div className="absolute bottom-5 w-full px-5 flex items-center">
         <div className="pointer-events-none absolute inset-x-0 text-center text-[#808080] opacity-30 text-base font-[Arial,sans-serif]">
@@ -184,7 +185,10 @@ function App() {
           Paramètres
         </button>
 
-        <SettingsDialog isOpen={isSettingsOpen} onClose={() => setIsSettingsOpen(false)} />
+        <SettingsDialog
+          isOpen={isSettingsOpen}
+          onClose={() => setIsSettingsOpen(false)}
+        />
       </div>
     </div>
   );

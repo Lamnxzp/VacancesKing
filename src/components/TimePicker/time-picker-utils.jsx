@@ -23,10 +23,7 @@ export function isValidMinuteOrSecond(value) {
   return /^[0-5][0-9]$/.test(value);
 }
 
-export function getValidNumber(
-  value,
-  config
-) {
+export function getValidNumber(value, config) {
   const { max, min = 0, loop = false } = config;
   let numericValue = parseInt(value, 10);
 
@@ -59,10 +56,7 @@ export function getValidMinuteOrSecond(value) {
   return getValidNumber(value, { max: 59 });
 }
 
-export function getValidArrowNumber(
-  value,
-  config
-) {
+export function getValidArrowNumber(value, config) {
   const { min, max, step } = config;
   let numericValue = parseInt(value, 10);
   if (!isNaN(numericValue)) {
@@ -109,12 +103,7 @@ export function set12Hours(date, value, period) {
   return date;
 }
 
-export function setDateByType(
-  date,
-  value,
-  type,
-  period
-) {
+export function setDateByType(date, value, type, period) {
   switch (type) {
     case "minutes":
       return setMinutes(date, value);
@@ -148,11 +137,7 @@ export function getDateByType(date, type) {
   }
 }
 
-export function getArrowByType(
-  value,
-  step,
-  type
-) {
+export function getArrowByType(value, step, type) {
   switch (type) {
     case "minutes":
       return getValidArrowMinuteOrSecond(value, step);
@@ -197,4 +182,3 @@ export function display12HourValue(hours) {
   if (hours % 12 > 9) return `${hours}`;
   return `0${hours % 12}`;
 }
- 

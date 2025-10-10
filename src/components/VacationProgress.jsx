@@ -2,7 +2,11 @@ import { useState, useEffect } from "react";
 
 const UPDATE_INTERVAL = 30;
 
-export default function VacationProgress({ vacation, progressBarColor, vacationStyle }) {
+export default function VacationProgress({
+  vacation,
+  progressBarColor,
+  vacationStyle,
+}) {
   const [progress, setProgress] = useState(0);
   const [timeLeft, setTimeLeft] = useState("");
   const [rate, setRate] = useState("");
