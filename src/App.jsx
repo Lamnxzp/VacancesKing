@@ -42,7 +42,7 @@ const GRADIENT_COLORS = {
 const ZONE = "C";
 const UPDATE_INTERVAL = 30;
 
-function App() {
+function App() {  
   const [vacation, setVacation] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [dots, setDots] = useState("");
@@ -137,8 +137,11 @@ function App() {
       }
     };
 
-    fetchVacation();
-  }, []);
+    if (!vacation || !isSettingsOpen) { // refresh when the settings dialog is closed
+      fetchVacation();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isSettingsOpen]);
 
   if (isLoading) {
     return (

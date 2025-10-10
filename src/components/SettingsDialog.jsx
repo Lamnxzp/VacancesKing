@@ -164,9 +164,6 @@ export default function SettingsDialog({ isOpen, onClose }) {
                         </div>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                           <div>
-                            {/* <label className="block text-white/60 text-sm mb-1">
-                              Date de début
-                            </label> */}
                             <DateTimePicker
                               key={"start-" + vacationName}
                               label="Date de début"
@@ -184,9 +181,6 @@ export default function SettingsDialog({ isOpen, onClose }) {
                             />
                           </div>
                           <div>
-                            {/* <label className="block text-white/60 text-sm mb-1">
-                              Date de fin
-                            </label> */}
                             <DateTimePicker
                               key={"end-" + vacationName}
                               label="Date de fin"

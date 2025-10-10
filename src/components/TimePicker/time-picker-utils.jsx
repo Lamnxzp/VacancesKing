@@ -1,3 +1,7 @@
+/*
+  Source: https://github.com/openstatusHQ/time-picker
+*/
+
 /**
  * regular expression to check for valid hour format (01-23)
  */
