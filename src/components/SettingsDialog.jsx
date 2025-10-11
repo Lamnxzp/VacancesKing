@@ -8,11 +8,14 @@ import {
   TabPanel,
   TabPanels,
 } from "@headlessui/react";
-import { Fragment, useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { DateTimePicker } from "./DateTimePicker.jsx";
 import { getSchoolYear } from "@/lib/utils.js";
 
-const SETTINGS_TABS = [{ id: "dates-tab", label: "Dates" }];
+const SETTINGS_TABS = [
+  { id: "general-tab", label: "Général" },
+  { id: "dates-tab", label: "Dates" },
+];
 
 const VACATION_NAMES = [
   "Vacances de la Toussaint",
@@ -24,48 +27,45 @@ const VACATION_NAMES = [
 ];
 
 export default function SettingsDialog({ isOpen, onClose }) {
-  const [vacationOverrides, setVacationOverrides] = useState({});
+  const [settings, setSettings] = useState({
+    zone: null,
+    vacationOverrides: {},
+  });
 
   useEffect(() => {
     if (isOpen) {
-      const settings = JSON.parse(localStorage.getItem("settings") || "{}");
-      setVacationOverrides(settings.vacationOverrides || {});
+      const savedSettings = JSON.parse(
+        localStorage.getItem("settings") || "{}"
+      );
+
+      setSettings((currentSettings) => ({
+        ...currentSettings,
+        ...savedSettings,
+      }));
     }
   }, [isOpen]);
 
+  const handleSettingChange = (key, value) => {
+    const newSettings = { ...settings, [key]: value };
+    setSettings(newSettings);
+    localStorage.setItem("settings", JSON.stringify(newSettings));
+  };
+
   const handleDateChange = (vacationName, field, value) => {
     const newOverrides = {
-      ...vacationOverrides,
+      ...settings.vacationOverrides,
       [vacationName]: {
-        ...vacationOverrides[vacationName],
+        ...settings.vacationOverrides[vacationName],
         [field]: value,
       },
     };
-    setVacationOverrides(newOverrides);
-
-    const settings = JSON.parse(localStorage.getItem("settings") || "{}");
-    localStorage.setItem(
-      "settings",
-      JSON.stringify({
-        ...settings,
-        vacationOverrides: newOverrides,
-      })
-    );
+    handleSettingChange("vacationOverrides", newOverrides);
   };
 
   const handleResetVacation = (vacationName) => {
-    const newOverrides = { ...vacationOverrides };
+    const newOverrides = { ...settings.vacationOverrides };
     delete newOverrides[vacationName];
-    setVacationOverrides(newOverrides);
-
-    const settings = JSON.parse(localStorage.getItem("settings") || "{}");
-    localStorage.setItem(
-      "settings",
-      JSON.stringify({
-        ...settings,
-        vacationOverrides: newOverrides,
-      })
-    );
+    handleSettingChange("vacationOverrides", newOverrides);
   };
 
   return (
@@ -139,6 +139,30 @@ export default function SettingsDialog({ isOpen, onClose }) {
               <TabPanels className="flex-1 p-6 md:p-8 overflow-y-auto">
                 <TabPanel className="space-y-6">
                   <div className="flex items-center justify-between mb-4">
+                    <h3 className="text-xl font-bold text-white">Général</h3>
+                  </div>
+
+                  <div className="space-y-4">
+                    <div className="bg-zinc-800 rounded-lg p-4 border border-white/10">
+                      <label className="block text-white font-medium mb-2">
+                        Zone
+                      </label>
+                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                        {["A", "B", "C"].map((zone) => (
+                          <button
+                            key={zone}
+                            onClick={() => handleSettingChange("zone", zone)}
+                            className={`px-4 py-3 sm:py-2.5 bg-zinc-900 border-2 rounded-lg text-white transition-colors ${settings.zone === zone ? "border-white/40" : "border-white/20 hover:border-white/30"}`}
+                          >
+                            Zone {zone}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </TabPanel>
+                <TabPanel className="space-y-6">
+                  <div className="flex items-center justify-between mb-4">
                     <h3 className="text-xl font-bold text-white">
                       Dates des vacances
                     </h3>
@@ -154,7 +178,7 @@ export default function SettingsDialog({ isOpen, onClose }) {
                           <label className="block text-white font-medium">
                             {vacationName}
                           </label>
-                          {vacationOverrides[vacationName] && (
+                          {settings.vacationOverrides[vacationName] && (
                             <button
                               onClick={() => handleResetVacation(vacationName)}
                               className="px-3 py-1 bg-zinc-900 border border-white/20 rounded-lg text-white/60 hover:text-white hover:border-white/40 transition-all duration-200 text-xs"
@@ -169,8 +193,8 @@ export default function SettingsDialog({ isOpen, onClose }) {
                               key={"start-" + vacationName}
                               label="Date de début"
                               value={
-                                vacationOverrides[vacationName]?.start_date ||
-                                ""
+                                settings.vacationOverrides[vacationName]
+                                  ?.start_date || ""
                               }
                               onChange={(value) =>
                                 handleDateChange(
@@ -188,7 +212,8 @@ export default function SettingsDialog({ isOpen, onClose }) {
                               key={"end-" + vacationName}
                               label="Date de fin"
                               value={
-                                vacationOverrides[vacationName]?.end_date || ""
+                                settings.vacationOverrides[vacationName]
+                                  ?.end_date || ""
                               }
                               onChange={(value) =>
                                 handleDateChange(

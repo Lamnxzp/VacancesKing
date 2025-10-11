@@ -40,8 +40,6 @@ const GRADIENT_COLORS = {
   "summer-gradient-text": "#FFD700",
 };
 
-const ZONE = "C";
-
 function App() {
   const [vacation, setVacation] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -77,7 +75,7 @@ function App() {
         const baseUrl =
           "https://data.education.gouv.fr/api/explore/v2.1/catalog/datasets/fr-en-calendrier-scolaire/records";
         const url = `${baseUrl}?refine=zones:${encodeURIComponent(
-          `Zone ${ZONE.toUpperCase()}`
+          `Zone ${settings.zone || "C"}`
         )}&refine=annee_scolaire:${encodeURIComponent(
           schoolYear
         )}&group_by=${encodeURIComponent(
