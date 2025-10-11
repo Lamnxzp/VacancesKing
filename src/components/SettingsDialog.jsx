@@ -28,7 +28,7 @@ const VACATION_NAMES = [
 
 export default function SettingsDialog({ isOpen, onClose }) {
   const [settings, setSettings] = useState({
-    zone: null,
+    zone: "C",
     vacationOverrides: {},
   });
 
