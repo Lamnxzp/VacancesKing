@@ -143,8 +143,8 @@ export default function SettingsDialog({ isOpen, onClose }) {
                   </div>
 
                   <div className="space-y-4">
-                    <div className="bg-zinc-800 rounded-lg p-4 border border-white/10">
-                      <label className="block text-white font-medium mb-2">
+                    <div className="bg-zinc-900/50 rounded-xl p-5 ring-1 ring-white/10">
+                      <label className="block text-sm font-medium text-zinc-400 mb-3">
                         Zone
                       </label>
                       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
@@ -152,7 +152,7 @@ export default function SettingsDialog({ isOpen, onClose }) {
                           <button
                             key={zone}
                             onClick={() => handleSettingChange("zone", zone)}
-                            className={`px-4 py-3 sm:py-2.5 bg-zinc-900 border-2 rounded-lg text-white transition-colors ${settings.zone === zone ? "border-white/40" : "border-white/20 hover:border-white/30"}`}
+                            className={`w-full px-4 py-2.5 rounded-lg text-sm transition-all duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-black focus:ring-white ${settings.zone === zone ? "bg-white text-zinc-900 shadow-md" : "bg-zinc-800 text-zinc-300 hover:bg-zinc-700/60"}`}
                           >
                             Zone {zone}
                           </button>
