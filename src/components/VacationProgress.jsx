@@ -14,6 +14,14 @@ export default function VacationProgress({
   useEffect(() => {
     if (!vacation) return;
 
+    const totalDuration = vacation.start - vacation.last;
+    const onePercentDuration = totalDuration / 100;
+    const hours = onePercentDuration / (1000 * 60 * 60);
+
+    setRate(
+      `1% ≈ ${Math.round(hours)} heure${Math.round(hours) > 1 ? "s" : ""}`
+    );
+
     const calculateProgress = () => {
       const now = new Date();
       const totalDuration = vacation.start - vacation.last;
@@ -39,18 +47,6 @@ export default function VacationProgress({
         );
       }
     };
-
-    const totalDuration = vacation.start - vacation.last;
-    const onePercentDuration = totalDuration / 100;
-    const hours = onePercentDuration / (1000 * 60 * 60);
-
-    setRate(
-      hours >= 1
-        ? `1% ≈ ${Math.round(hours)} heure${Math.round(hours) > 1 ? "s" : ""}`
-        : `1% ≈ ${Math.round(onePercentDuration / (1000 * 60))} minute${
-            Math.round(onePercentDuration / (1000 * 60)) > 1 ? "s" : ""
-          }`
-    );
 
     const interval = setInterval(calculateProgress, UPDATE_INTERVAL);
     calculateProgress();

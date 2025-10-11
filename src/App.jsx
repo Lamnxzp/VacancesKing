@@ -41,7 +41,6 @@ const GRADIENT_COLORS = {
 };
 
 const ZONE = "C";
-const UPDATE_INTERVAL = 30;
 
 function App() {
   const [vacation, setVacation] = useState(null);
