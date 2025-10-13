@@ -15,7 +15,7 @@ export default function VacationProgress({
     // Preload party popper emoji
     const img = new Image();
     img.src = "./emojis/party_popper.avif";
-  });
+  }, []);
 
   useEffect(() => {
     if (!vacation) return;
