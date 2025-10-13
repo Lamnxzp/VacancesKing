@@ -12,12 +12,6 @@ export default function VacationProgress({
   const [rate, setRate] = useState("");
 
   useEffect(() => {
-    // Preload party popper emoji
-    const img = new Image();
-    img.src = "./emojis/party_popper.avif";
-  }, []);
-
-  useEffect(() => {
     if (!vacation) return;
 
     if (vacation.current) {
