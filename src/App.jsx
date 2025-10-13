@@ -100,6 +100,20 @@ function App() {
           })
           .sort((a, b) => a.start - b.start);
 
+        const currentVacation = allVacations.find(
+          (v) => now >= v.start && now < v.end
+        );
+
+        if (currentVacation) {
+          setVacation({
+            name: currentVacation.name,
+            // start: currentVacation.start,
+            // end: currentVacation.end,
+            current: true,
+          });
+          return;
+        }
+
         const upcomingVacations = allVacations.filter((v) => v.start > now);
         if (!upcomingVacations.length) return;
 
