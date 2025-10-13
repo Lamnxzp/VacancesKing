@@ -12,6 +12,12 @@ export default function VacationProgress({
   const [rate, setRate] = useState("");
 
   useEffect(() => {
+    // Preload party popper emoji
+    const img = new Image();
+    img.src = "./emojis/party_popper.avif";
+  });
+
+  useEffect(() => {
     if (!vacation) return;
 
     const totalDuration = vacation.start - vacation.last;
@@ -58,17 +64,19 @@ export default function VacationProgress({
 
   return (
     <>
-      <h1 className="mb-[-5px] text-[2.5rem] max-md:text-[2rem]">
+      <h1 className="text-[2.5rem] max-md:text-[2rem]">
         <span className="inline-block min-w-[250px] max-md:min-w-[200px]">
           {isOnVacation ? 100 : progress.toFixed(6)}%
         </span>
       </h1>
 
       {rate && !isOnVacation && (
-        <div className="mb-5 text-sm text-[#808080] text-center">({rate})</div>
+        <div className="text-sm text-[#808080] text-center mt-[-0.5rem] mb-1">
+          ({rate})
+        </div>
       )}
 
-      <div className="w-[95%] max-w-[1200px] h-[60px] border-[5px] border-white relative bg-black shadow-[0_0_0_3px_black,0_0_0_7px_white]">
+      <div className="w-[95%] max-w-[1200px] h-[60px] border-[5px] mt-4 border-white relative bg-black shadow-[0_0_0_3px_black,0_0_0_7px_white]">
         <div
           className="h-full transition-[width] duration-1000 ease-linear"
           style={{
@@ -81,11 +89,17 @@ export default function VacationProgress({
       <div className="mt-[30px] text-[1.7rem] max-md:text-[1.4rem]">
         {isOnVacation ? (
           <>
-            <span className="rainbow-text">En vacances !</span>
+            <span
+              className={
+                vacationStyle?.style ? `rainbow-${vacationStyle.style}` : ""
+              }
+            >
+              En vacances !
+            </span>
             <img
               src="/emojis/party_popper.avif"
               alt="party popper emoji"
-              className="ml-1.5 h-[1.25em] w-auto align-middle inline-block"
+              className="ml-1.5 h-[1.25em] w-auto align-middle inline-block saturate-150"
             />
           </>
         ) : (
