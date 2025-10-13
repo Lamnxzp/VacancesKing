@@ -68,6 +68,11 @@ const TimePickerInput = React.forwardRef(
 
     const handleKeyDown = (e) => {
       if (e.key === "Tab") return;
+      if (e.key === "Escape") {
+        e.stopPropagation();
+        ref?.current?.blur();
+        return;
+      }
       e.preventDefault();
       if (e.key === "ArrowRight") onRightFocus?.();
       if (e.key === "ArrowLeft") onLeftFocus?.();
