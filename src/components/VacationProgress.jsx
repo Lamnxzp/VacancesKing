@@ -20,6 +20,13 @@ export default function VacationProgress({
   useEffect(() => {
     if (!vacation) return;
 
+    if (vacation.current) {
+      setProgress(100);
+      setTimeLeft("0 secondes");
+      setRate("");
+      return;
+    }
+
     const totalDuration = vacation.start - vacation.last;
     const onePercentDuration = totalDuration / 100;
     const hours = onePercentDuration / (1000 * 60 * 60);
