@@ -37,9 +37,14 @@ export function DateTimePicker({
       return;
     }
 
-    setDate(selectedDate);
+    // Preserve time from previous date if available
+    const newDate = new Date(selectedDate);
+    if (date) {
+      newDate.setHours(date.getHours(), date.getMinutes(), date.getSeconds());
+    }
+    setDate(newDate);
     if (onChange) {
-      onChange(selectedDate.toISOString());
+      onChange(newDate.toISOString());
     }
     setOpen(false);
   };
