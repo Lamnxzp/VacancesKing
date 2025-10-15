@@ -7,6 +7,9 @@ import {
   TabList,
   TabPanel,
   TabPanels,
+  Disclosure,
+  DisclosureButton,
+  DisclosurePanel,
 } from "@headlessui/react";
 import { useState, useEffect } from "react";
 import { DateTimePicker } from "./DateTimePicker.jsx";
@@ -98,7 +101,7 @@ export default function SettingsDialog({ isOpen, onClose }) {
               </svg>
             </button>
             <TabGroup className="flex flex-col md:flex-row h-full w-full">
-              {/* Sidebar gauche */}
+              {/* Sidebar */}
               <div className="w-full md:w-64 bg-zinc-950 border-b md:border-b-0 md:border-r border-white/10 p-4 md:p-6 flex flex-col">
                 <DialogTitle className="flex items-center gap-2 text-[22px] font-bold text-white mb-4 md:mb-6">
                   <svg
@@ -135,7 +138,6 @@ export default function SettingsDialog({ isOpen, onClose }) {
                 </TabList>
               </div>
 
-              {/* Contenu à droite */}
               <TabPanels className="flex-1 p-6 md:p-8 overflow-y-auto">
                 <TabPanel className="space-y-6">
                   <div className="flex items-center justify-between mb-4">
@@ -161,6 +163,7 @@ export default function SettingsDialog({ isOpen, onClose }) {
                     </div>
                   </div>
                 </TabPanel>
+
                 <TabPanel className="space-y-6">
                   <div className="flex items-center justify-between mb-4">
                     <h3 className="text-xl font-bold text-white">
@@ -168,66 +171,100 @@ export default function SettingsDialog({ isOpen, onClose }) {
                     </h3>
                   </div>
 
-                  <div className="space-y-4">
+                  <div className="space-y-3">
                     {VACATION_NAMES.map((vacationName) => (
-                      <div
+                      <Disclosure
                         key={vacationName}
-                        className="bg-zinc-800 rounded-lg p-4 border border-white/10"
+                        as="div"
+                        className="bg-zinc-900/50 rounded-xl ring-1 ring-white/10 transition-all duration-300"
                       >
-                        <div className="flex items-center justify-between mb-3">
-                          <label className="block text-white font-medium">
-                            {vacationName}
-                          </label>
-                          {settings.vacationOverrides[vacationName] && (
-                            <button
-                              onClick={() => handleResetVacation(vacationName)}
-                              className="px-3 py-1 bg-zinc-900 border border-white/20 rounded-lg text-white/60 hover:text-white hover:border-white/40 transition-all duration-200 text-xs"
+                        {({ open }) => (
+                          <>
+                            <DisclosureButton className="w-full flex items-center justify-between p-4 text-left text-white/90">
+                              <span className="font-medium">
+                                {vacationName}
+                              </span>
+                              <div className="flex items-center gap-4">
+                                {settings.vacationOverrides[vacationName] && (
+                                  <button
+                                    onClick={(e) => {
+                                      e.stopPropagation(); // Prevent disclosure from toggling
+                                      handleResetVacation(vacationName);
+                                    }}
+                                    className="px-3 py-1 bg-zinc-800 border border-white/10 rounded-lg text-white/60 hover:text-white hover:border-white/20 transition-all duration-200 text-xs"
+                                  >
+                                    Réinitialiser
+                                  </button>
+                                )}
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  fill="none"
+                                  viewBox="0 0 24 24"
+                                  strokeWidth={1.5}
+                                  stroke="currentColor"
+                                  className={`w-5 h-5 text-white/60 transition-transform duration-200 ${open ? "transform rotate-180" : ""}`}
+                                >
+                                  <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    d="m19.5 8.25-7.5 7.5-7.5-7.5"
+                                  />
+                                </svg>
+                              </div>
+                            </DisclosureButton>
+
+                            <DisclosurePanel
+                              transition
+                              className="p-6 border-t border-white/10 origin-top duration-300 ease-in-out data-[closed]:-translate-y-1 data-[closed]:opacity-0"
                             >
-                              Réinitialiser
-                            </button>
-                          )}
-                        </div>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                          <div>
-                            <DateTimePicker
-                              key={"start-" + vacationName}
-                              label="Date de début"
-                              value={
-                                settings.vacationOverrides[vacationName]
-                                  ?.start_date || ""
-                              }
-                              onChange={(value) =>
-                                handleDateChange(
-                                  vacationName,
-                                  "start_date",
-                                  value
-                                )
-                              }
-                              startMonth={new Date(getSchoolYear(true)[0], 0)}
-                              endMonth={new Date(getSchoolYear(true)[1], 11)}
-                            />
-                          </div>
-                          <div>
-                            <DateTimePicker
-                              key={"end-" + vacationName}
-                              label="Date de fin"
-                              value={
-                                settings.vacationOverrides[vacationName]
-                                  ?.end_date || ""
-                              }
-                              onChange={(value) =>
-                                handleDateChange(
-                                  vacationName,
-                                  "end_date",
-                                  value
-                                )
-                              }
-                              startMonth={new Date(getSchoolYear(true)[0], 0)}
-                              endMonth={new Date(getSchoolYear(true)[1], 11)}
-                            />
-                          </div>
-                        </div>
-                      </div>
+                              <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
+                                <DateTimePicker
+                                  key={"start-" + vacationName}
+                                  label="Date de début"
+                                  value={
+                                    settings.vacationOverrides[vacationName]
+                                      ?.start_date || ""
+                                  }
+                                  onChange={(value) =>
+                                    handleDateChange(
+                                      vacationName,
+                                      "start_date",
+                                      value
+                                    )
+                                  }
+                                  startMonth={
+                                    new Date(getSchoolYear(true)[0], 0)
+                                  }
+                                  endMonth={
+                                    new Date(getSchoolYear(true)[1], 11)
+                                  }
+                                />
+                                <DateTimePicker
+                                  key={"end-" + vacationName}
+                                  label="Date de fin"
+                                  value={
+                                    settings.vacationOverrides[vacationName]
+                                      ?.end_date || ""
+                                  }
+                                  onChange={(value) =>
+                                    handleDateChange(
+                                      vacationName,
+                                      "end_date",
+                                      value
+                                    )
+                                  }
+                                  startMonth={
+                                    new Date(getSchoolYear(true)[0], 0)
+                                  }
+                                  endMonth={
+                                    new Date(getSchoolYear(true)[1], 11)
+                                  }
+                                />
+                              </div>
+                            </DisclosurePanel>
+                          </>
+                        )}
+                      </Disclosure>
                     ))}
                   </div>
                 </TabPanel>
