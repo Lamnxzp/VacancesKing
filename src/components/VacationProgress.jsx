@@ -21,6 +21,9 @@ export default function VacationProgress({
       return;
     }
 
+    const settings = JSON.parse(localStorage.getItem("settings") || "{}");
+    const roundMethod = Math[settings.roundingMethod] || Math.round;
+
     const totalDuration = vacation.start - vacation.last;
     const onePercentDuration = totalDuration / 100;
     const hours = onePercentDuration / (1000 * 60 * 60);
@@ -41,17 +44,18 @@ export default function VacationProgress({
       setProgress(percentage);
 
       const remainingTime = vacation.start - now;
-
       if (remainingTime < 60 * 1000) {
-        setTimeLeft(`${Math.floor(remainingTime / 1000)} secondes`);
+        const secondes = roundMethod(remainingTime / 1000);
+        setTimeLeft(`${secondes} seconde${secondes <= 1 ? "" : "s"}`);
       } else if (remainingTime < 60 * 60 * 1000) {
-        setTimeLeft(`${Math.floor(remainingTime / (60 * 1000))} minutes`);
+        const minutes = roundMethod(remainingTime / (60 * 1000));
+        setTimeLeft(`${minutes} minute${minutes <= 1 ? "" : "s"}`);
       } else if (remainingTime < 24 * 60 * 60 * 1000) {
-        setTimeLeft(`${Math.floor(remainingTime / (60 * 60 * 1000))} heures`);
+        const heures = roundMethod(remainingTime / (60 * 60 * 1000));
+        setTimeLeft(`${heures} heure${heures <= 1 ? "" : "s"}`);
       } else {
-        setTimeLeft(
-          `${Math.floor(remainingTime / (24 * 60 * 60 * 1000))} jours`
-        );
+        const jours = roundMethod(remainingTime / (24 * 60 * 60 * 1000));
+        setTimeLeft(`${jours} jour${jours <= 1 ? "" : "s"}`);
       }
     };
 

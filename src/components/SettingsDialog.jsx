@@ -29,10 +29,29 @@ const VACATION_NAMES = [
   "Début des Vacances d'Été",
 ];
 
+const ROUNDING_OPTIONS = [
+  {
+    id: "floor",
+    label: "Arrondir à l'inférieur",
+    description: "Ex: 3.7 jours → 3",
+  },
+  {
+    id: "round",
+    label: "Arrondir au plus proche",
+    description: "Ex: 3.7 jours → 4",
+  },
+  {
+    id: "ceil",
+    label: "Arrondir au supérieur",
+    description: "Ex: 3.2 jours → 4",
+  },
+];
+
 export default function SettingsDialog({ isOpen, onClose }) {
   const [settings, setSettings] = useState({
     zone: "C",
     vacationOverrides: {},
+    roundingMethod: "round",
   });
 
   useEffect(() => {
@@ -160,6 +179,30 @@ export default function SettingsDialog({ isOpen, onClose }) {
                           </button>
                         ))}
                       </div>
+                    </div>
+                  </div>
+
+                  <div className="bg-zinc-900/50 rounded-xl p-5 ring-1 ring-white/10">
+                    <label className="block text-sm font-medium text-zinc-400 mb-3">
+                      Méthode d'arrondi
+                    </label>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                      {ROUNDING_OPTIONS.map((option) => (
+                        <button
+                          key={option.id}
+                          onClick={() =>
+                            handleSettingChange("roundingMethod", option.id)
+                          }
+                          className={`w-full text-center p-3 rounded-lg text-sm transition-all duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-black focus:ring-white ${settings.roundingMethod === option.id ? "bg-white text-zinc-900 shadow-md" : "bg-zinc-800 text-zinc-300 hover:bg-zinc-700/60"}`}
+                        >
+                          <span className="block font-medium">
+                            {option.label}
+                          </span>
+                          <span className="block text-xs text-current/70 mt-1">
+                            {option.description}
+                          </span>
+                        </button>
+                      ))}
                     </div>
                   </div>
                 </TabPanel>
