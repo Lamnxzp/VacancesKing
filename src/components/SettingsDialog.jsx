@@ -186,7 +186,7 @@ export default function SettingsDialog({ isOpen, onClose }) {
                     <label className="block text-sm font-medium text-zinc-400 mb-3">
                       Méthode d'arrondi
                     </label>
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                       {ROUNDING_OPTIONS.map((option) => (
                         <button
                           key={option.id}
