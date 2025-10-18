@@ -1,204 +1,208 @@
-import { useState, useEffect, useMemo } from "react";
-import "./App.css";
-import SettingsDialog from "./components/SettingsDialog";
-import VacationProgress from "./components/VacationProgress";
-import { getSchoolYear } from "./lib/utils";
+import React, { useState, useEffect, useMemo, useCallback } from "react";
 
-const VACATION_STYLES = {
+import "./App.css";
+import { getSchoolYear } from "@/lib/utils.js";
+import SettingsDialog from "@/components/SettingsDialog.jsx";
+import VacationProgress from "@/components/VacationProgress.jsx";
+import { Settings } from "lucide-react";
+
+const VACATION_THEMES = {
   "Vacances de la Toussaint": {
-    style: "autumn-gradient-text",
-    emoji: "fallen-leaf",
+    gradient: "from-orange-400 to-yellow-500",
+    emoji: "🍁",
   },
   "Vacances de Noël": {
-    style: "christmas-gradient-text",
-    emoji: "santa_beer",
+    gradient: "from-red-500 to-green-500",
+    emoji: "🎄",
   },
   "Vacances d'Hiver": {
-    style: "winter-gradient-text",
-    emoji: "snowflake",
+    gradient: "from-sky-300 to-blue-400",
+    emoji: "❄️",
   },
   "Vacances de Printemps": {
-    style: "spring-gradient-text",
-    emoji: "blossom",
+    gradient: "from-pink-400 to-purple-400",
+    emoji: "🌸",
   },
   "Pont de l'Ascension": {
-    style: "sky-gradient-text",
-    emoji: "cloud",
+    gradient: "from-sky-400 to-indigo-400",
+    emoji: "☁️",
   },
   "Début des Vacances d'Été": {
-    style: "summer-gradient-text",
-    emoji: "sun-with-face",
+    gradient: "from-yellow-300 to-orange-400",
+    emoji: "☀️",
   },
 };
 
-const GRADIENT_COLORS = {
-  "autumn-gradient-text": "#FFB347",
-  "christmas-gradient-text": "#FF6347",
-  "winter-gradient-text": "#CEDEF2",
-  "spring-gradient-text": "#FBC2EB",
-  "sky-gradient-text": "#E0FFFF",
-  "summer-gradient-text": "#FFD700",
+const DEFAULT_THEME = {
+  gradient: "from-zinc-400 to-zinc-200",
+  emoji: "📅",
 };
 
 function App() {
   const [vacation, setVacation] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [dots, setDots] = useState("");
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const [error, setError] = useState(null);
+  const [showContent, setShowContent] = useState(false);
 
-  const progressBarColor = useMemo(() => {
-    if (vacation?.name && VACATION_STYLES[vacation.name]?.style) {
-      const gradientStyle = VACATION_STYLES[vacation.name].style;
-      return GRADIENT_COLORS[gradientStyle] || "#00ff00";
-    }
-    return "#00ff00";
+  const theme = useMemo(() => {
+    return VACATION_THEMES[vacation?.name] || DEFAULT_THEME;
   }, [vacation]);
 
-  useEffect(() => {
-    if (!isLoading) return;
+  const fetchVacationData = useCallback(async () => {
+    setShowContent(false);
+    setIsLoading(true);
+    setError(null);
+    try {
+      const settings = JSON.parse(localStorage.getItem("settings") || "{}");
+      const { zone = "C", vacationOverrides = {} } = settings;
+      const schoolYear = getSchoolYear();
 
-    const interval = setInterval(() => {
-      setDots((prev) => (prev.length < 3 ? prev + "." : ""));
-    }, 300);
+      const baseUrl =
+        "https://data.education.gouv.fr/api/explore/v2.1/catalog/datasets/fr-en-calendrier-scolaire/records";
+      const url = `${baseUrl}?refine=zones:${encodeURIComponent(
+        `Zone ${zone}`
+      )}&refine=annee_scolaire:${encodeURIComponent(
+        schoolYear
+      )}&group_by=${encodeURIComponent(
+        "description,start_date,end_date,zones"
+      )}&limit=20`;
 
-    return () => clearInterval(interval);
-  }, [isLoading]);
+      const response = await fetch(url);
+      if (!response.ok)
+        throw new Error(`HTTP error! status: ${response.status}`);
+      const data = await response.json();
 
-  useEffect(() => {
-    const fetchVacation = async () => {
-      try {
-        const settings = JSON.parse(localStorage.getItem("settings") || "{}");
-        const vacationOverrides = settings.vacationOverrides || {};
-
-        const schoolYear = getSchoolYear();
-
-        const baseUrl =
-          "https://data.education.gouv.fr/api/explore/v2.1/catalog/datasets/fr-en-calendrier-scolaire/records";
-        const url = `${baseUrl}?refine=zones:${encodeURIComponent(
-          `Zone ${settings.zone || "C"}`
-        )}&refine=annee_scolaire:${encodeURIComponent(
-          schoolYear
-        )}&group_by=${encodeURIComponent(
-          "description,start_date,end_date,zones"
-        )}&limit=20`;
-
-        const response = await fetch(url);
-        if (!response.ok) throw new Error("Failed to fetch");
-
-        const json = await response.json();
-        if (!json?.results?.length) return;
-
-        const now = new Date();
-        const allVacations = json.results
-          .map((result) => {
-            const override = vacationOverrides[result.description];
-            return {
-              name: result.description,
-              start: new Date(override?.start_date || result.start_date),
-              end: new Date(override?.end_date || result.end_date),
-            };
-          })
-          .sort((a, b) => a.start - b.start);
-
-        const currentVacation = allVacations.find(
-          (v) => now >= v.start && now < v.end
+      if (!data?.results?.length)
+        throw new Error(
+          "Aucune donnée de vacances trouvée pour cette zone/année."
         );
 
-        if (currentVacation) {
-          setVacation({
-            name: currentVacation.name,
-            // start: currentVacation.start,
-            // end: currentVacation.end,
-            current: true,
-          });
-          return;
-        }
+      const sortedVacations = data.results
+        .map((v) => {
+          const override = vacationOverrides[v.description] || {};
+          return {
+            name: v.description,
+            start: new Date(override.start_date || v.start_date),
+            end: new Date(override.end_date || v.end_date),
+          };
+        })
+        .sort((a, b) => a.start - b.start);
 
-        const upcomingVacations = allVacations.filter((v) => v.start > now);
-        if (!upcomingVacations.length) return;
+      const now = new Date();
+      const currentVacation = sortedVacations.find(
+        (v) => now >= v.start && now < v.end
+      );
 
-        const nextVacation = upcomingVacations[0];
-        const nextVacationIndex = allVacations.findIndex(
-          (v) => v.start.getTime() === nextVacation.start.getTime()
-        );
-
-        let progressStart;
-        if (nextVacationIndex === 0) {
-          progressStart = new Date(nextVacation.start.getFullYear(), 8, 1);
-        } else {
-          progressStart = allVacations[nextVacationIndex - 1].end;
-        }
-
-        setVacation({
-          name: nextVacation.name,
-          start: nextVacation.start,
-          last: progressStart,
-        });
-      } catch (error) {
-        console.error("Error fetching vacation data:", error);
-      } finally {
-        setIsLoading(false);
+      if (currentVacation) {
+        setVacation({ ...currentVacation, current: true });
+        return;
       }
-    };
 
-    if (!vacation || !isSettingsOpen) {
-      // refresh when the settings dialog is closed
-      fetchVacation();
+      const nextVacation = sortedVacations.find((v) => v.start > now);
+      if (!nextVacation) {
+        setVacation(null);
+        return;
+      }
+
+      const nextVacationIndex = sortedVacations.findIndex(
+        (v) => v.name === nextVacation.name
+      );
+      const previousVacationEnd =
+        nextVacationIndex > 0
+          ? sortedVacations[nextVacationIndex - 1].end
+          : new Date(`${schoolYear.split("-")[0]}-09-01`); // Rentrée scolaire
+
+      setVacation({
+        name: nextVacation.name,
+        start: nextVacation.start,
+        last: previousVacationEnd,
+        current: false,
+      });
+    } catch (err) {
+      console.error("Error fetching vacation data:", err);
+      setError(err.message);
+    } finally {
+      setIsLoading(false);
+      // Petit délai pour permettre au DOM de se mettre à jour avant la transition
+      setTimeout(() => setShowContent(true), 100);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isSettingsOpen]);
+  }, []);
 
-  if (isLoading) {
+  useEffect(() => {
+    fetchVacationData();
+  }, [fetchVacationData]);
+
+  const renderContent = () => {
+    if (isLoading) return null;
+
+    if (error) {
+      return (
+        <div className="text-center">
+          <p className="text-red-400 text-xl mb-4">Une erreur est survenue.</p>
+          <p className="text-zinc-400 mb-6">{error}</p>
+        </div>
+      );
+    }
+
+    if (!vacation) {
+      return (
+        <div className="text-zinc-300 text-2xl">
+          Plus de vacances prévues pour cette année scolaire.
+        </div>
+      );
+    }
+
     return (
-      <div className="flex justify-center items-center min-h-screen">
-        <span className="text-[#999] text-xl font-bold loading-text">
-          Chargement{dots}
-        </span>
+      <div
+        className={`z-10 w-full flex items-center justify-center transition-opacity duration-700 ${
+          showContent ? "opacity-100" : "opacity-0 pointer-events-none"
+        }`}
+      >
+        <div className="w-full max-w-2xl mx-auto flex flex-col items-center gap-8">
+          <h1 className="text-4xl md:text-5xl font-bold text-center">
+            <span
+              className={`text-transparent bg-clip-text bg-gradient-to-r ${theme.gradient}`}
+            >
+              {vacation.name}
+            </span>
+            <span className="ml-3 text-4xl">{theme.emoji}</span>
+          </h1>
+          <VacationProgress vacation={vacation} theme={theme} />
+        </div>
       </div>
     );
-  }
-
-  const vacationStyle = vacation?.name && VACATION_STYLES[vacation.name];
+  };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen text-center px-5 relative antialiased bg-black">
-      <h1 className="mb-2.5 text-[2.5rem] border-2 border-dashed border-white/25 rounded-[10px] p-2.5 flex items-center justify-center flex-row max-md:text-[1.8rem]">
-        <span className={`font-bold ${vacationStyle?.style || ""}`}>
-          {vacation?.name}
-        </span>
-        {vacationStyle?.emoji && (
-          <img
-            src={`/emojis/${vacationStyle.emoji}.avif`}
-            alt={`${vacationStyle.emoji} emoji`}
-            className="ml-2.5 h-[1.25em] w-auto align-middle"
-          />
-        )}
-      </h1>
-
-      <VacationProgress
-        vacation={vacation}
-        progressBarColor={progressBarColor}
-        vacationStyle={vacationStyle}
-      />
-
-      <div className="absolute bottom-5 w-full px-5 flex items-center">
-        <div className="pointer-events-none absolute inset-x-0 text-center text-[#808080] opacity-30 text-base font-[Arial,sans-serif]">
-          zaza paye pas
-        </div>
-
+    <main className="min-h-screen bg-zinc-950 text-white font-sans flex flex-col items-center justify-center p-4 relative antialiased overflow-hidden">
+      <div className="absolute top-0 right-0 p-4 z-20">
         <button
+          type="button"
           onClick={() => setIsSettingsOpen(true)}
-          className="ml-auto relative z-10 text-[#808080] hover:text-white/80 px-3 py-1.5 border-2 border-dashed border-[#808080]/30 rounded-[10px] hover:border-white/40 opacity-70 hover:opacity-90 transition-all duration-300 text-sm font-[Arial,sans-serif] focus:outline-none cursor-pointer"
+          className="p-3 rounded-full text-zinc-400 hover:text-white hover:bg-zinc-800/50 transition-all duration-200"
+          aria-label="Ouvrir les paramètres"
         >
-          Paramètres
+          <Settings className="w-6 h-6" />
         </button>
-
-        <SettingsDialog
-          isOpen={isSettingsOpen}
-          onClose={() => setIsSettingsOpen(false)}
-        />
       </div>
-    </div>
+
+      {isLoading ? (
+        <div className="text-zinc-400 text-xl animate-pulse">
+          Chargement des données...
+        </div>
+      ) : (
+        renderContent()
+      )}
+
+      <SettingsDialog
+        isOpen={isSettingsOpen}
+        onClose={() => {
+          setIsSettingsOpen(false);
+          fetchVacationData(); // Refresh data when dialog closes
+        }}
+      />
+    </main>
   );
 }
 
