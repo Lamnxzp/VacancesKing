@@ -60,7 +60,7 @@ export default function VacationProgress({ vacation, theme }) {
       <h2 className="text-6xl md:text-8xl font-bold text-white tracking-tighter">
         {isOnVacation ? "100" : truncateToDecimals(progress, 4)}%
       </h2>
-      <div className="w-full bg-slate-700/50 rounded-full h-6 overflow-hidden border border-slate-600/50">
+      <div className="w-full bg-zinc-700/50 rounded-full h-6 overflow-hidden border border-zinc-600/50">
         <div
           className={`relative h-full rounded-full bg-gradient-to-r ${themeGradient} transition-all duration-1000 ease-out overflow-hidden`}
           style={{ width: `${progress}%` }}
@@ -69,7 +69,7 @@ export default function VacationProgress({ vacation, theme }) {
         </div>
       </div>
 
-      <div className="text-2xl md:text-3xl font-medium text-slate-300">
+      <div className="text-2xl md:text-3xl font-medium text-zinc-300">
         {isOnVacation ? (
           <>
             <span
