@@ -1,126 +1,95 @@
-import { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
+import { truncateToDecimals } from "@/lib/utils.js";
 
-const UPDATE_INTERVAL = 30;
-
-export default function VacationProgress({
-  vacation,
-  progressBarColor,
-  vacationStyle,
-}) {
+export default function VacationProgress({ vacation, theme }) {
   const [progress, setProgress] = useState(0);
   const [timeLeft, setTimeLeft] = useState("");
-  const [rate, setRate] = useState("");
 
   useEffect(() => {
-    if (!vacation) return;
-
-    if (vacation.current) {
+    if (!vacation || vacation.current) {
       setProgress(100);
-      setTimeLeft("0 secondes");
-      setRate("");
       return;
     }
 
+    // Using custom rounding method (ceil, floor, round) only for days
     const settings = JSON.parse(localStorage.getItem("settings") || "{}");
     const roundMethod = Math[settings.roundingMethod] || Math.round;
 
-    const totalDuration = vacation.start - vacation.last;
-    const onePercentDuration = totalDuration / 100;
-    const hours = onePercentDuration / (1000 * 60 * 60);
-
-    setRate(
-      `1% ≈ ${Math.round(hours)} heure${Math.round(hours) > 1 ? "s" : ""}`
-    );
-
     const calculateProgress = () => {
-      const now = new Date();
-      const totalDuration = vacation.start - vacation.last;
-      const elapsedDuration = now - vacation.last;
+      const now = new Date().getTime();
+      const start = vacation.last.getTime();
+      const end = vacation.start.getTime();
+
+      if (now >= end) {
+        setProgress(100);
+        setTimeLeft("0s");
+        return;
+      }
+
+      const totalDuration = end - start;
+      const elapsedDuration = now - start;
       const percentage = Math.min(
         100,
         Math.max(0, (elapsedDuration / totalDuration) * 100)
       );
-
       setProgress(percentage);
 
-      const remainingTime = vacation.start - now;
+      const remainingTime = end - now;
       if (remainingTime < 60 * 1000) {
-        const secondes = roundMethod(remainingTime / 1000);
-        setTimeLeft(`${secondes} seconde${secondes <= 1 ? "" : "s"}`);
+        setTimeLeft(`${Math.floor(remainingTime / 1000)}s`);
       } else if (remainingTime < 60 * 60 * 1000) {
-        const minutes = roundMethod(remainingTime / (60 * 1000));
-        setTimeLeft(`${minutes} minute${minutes <= 1 ? "" : "s"}`);
+        setTimeLeft(`${Math.floor(remainingTime / (60 * 1000))}m`);
       } else if (remainingTime < 24 * 60 * 60 * 1000) {
-        const heures = roundMethod(remainingTime / (60 * 60 * 1000));
-        setTimeLeft(`${heures} heure${heures <= 1 ? "" : "s"}`);
+        setTimeLeft(`${Math.floor(remainingTime / (60 * 60 * 1000))}h`);
       } else {
-        const jours = roundMethod(remainingTime / (24 * 60 * 60 * 1000));
-        setTimeLeft(`${jours} jour${jours <= 1 ? "" : "s"}`);
+        setTimeLeft(`${roundMethod(remainingTime / (24 * 60 * 60 * 1000))}j`);
       }
     };
 
-    const interval = setInterval(calculateProgress, UPDATE_INTERVAL);
+    const interval = setInterval(calculateProgress, 1000);
     calculateProgress();
 
     return () => clearInterval(interval);
   }, [vacation]);
 
   const isOnVacation = progress >= 100;
+  const themeGradient = theme.gradient || "";
 
   return (
-    <>
-      <h1 className="text-[2.5rem] max-md:text-[2rem]">
-        <span className="inline-block min-w-[250px] max-md:min-w-[200px]">
-          {isOnVacation ? 100 : progress.toFixed(6)}%
-        </span>
-      </h1>
-
-      {rate && !isOnVacation && (
-        <div className="text-sm text-[#808080] text-center mt-[-0.5rem] mb-1">
-          ({rate})
-        </div>
-      )}
-
-      <div className="w-[95%] max-w-[1200px] h-[60px] border-[5px] mt-4 border-white relative bg-black shadow-[0_0_0_3px_black,0_0_0_7px_white]">
+    <div className="w-full flex flex-col items-center gap-6">
+      <h2 className="text-6xl md:text-8xl font-bold text-white tracking-tighter">
+        {isOnVacation ? "100" : truncateToDecimals(progress, 4)}%
+      </h2>
+      <div className="w-full bg-slate-700/50 rounded-full h-6 overflow-hidden border border-slate-600/50">
         <div
-          className="h-full transition-[width] duration-1000 ease-linear"
-          style={{
-            width: `${progress}%`,
-            backgroundColor: progressBarColor,
-          }}
-        />
+          className={`relative h-full rounded-full bg-gradient-to-r ${themeGradient} transition-all duration-1000 ease-out overflow-hidden`}
+          style={{ width: `${progress}%` }}
+        >
+          <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-r from-transparent via-white/20 to-transparent animate-[shimmer_3s_infinite]"></div>
+        </div>
       </div>
 
-      <div className="mt-[30px] text-[1.7rem] max-md:text-[1.4rem]">
+      <div className="text-2xl md:text-3xl font-medium text-slate-300">
         {isOnVacation ? (
           <>
             <span
-              className={
-                vacationStyle?.style ? `rainbow-${vacationStyle.style}` : ""
-              }
+              className={`text-transparent bg-clip-text bg-gradient-to-r ${themeGradient}`}
             >
               En vacances !
             </span>
-            <img
-              src="/emojis/party_popper.avif"
-              alt="party popper emoji"
-              className="ml-1.5 h-[1.25em] w-auto align-middle inline-block saturate-150"
-            />
+            <span> 🎉</span>
           </>
         ) : (
           <>
             Plus que{" "}
             <span
-              className={
-                vacationStyle?.style ? `rainbow-${vacationStyle.style}` : ""
-              }
+              className={`font-medium text-transparent bg-clip-text bg-gradient-to-r ${themeGradient}`}
             >
               {timeLeft}
-            </span>{" "}
-            avant les vacances
+            </span>
           </>
         )}
       </div>
-    </>
+    </div>
   );
 }
