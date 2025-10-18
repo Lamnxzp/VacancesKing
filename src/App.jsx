@@ -33,6 +33,11 @@ const VACATION_THEMES = {
   },
 };
 
+const DEFAULT_THEME = {
+  gradient: "from-zinc-400 to-zinc-200",
+  emoji: "📅",
+};
+
 function App() {
   const [vacation, setVacation] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -41,7 +46,7 @@ function App() {
   const [showContent, setShowContent] = useState(false);
 
   const theme = useMemo(() => {
-    return VACATION_THEMES[vacation?.name];
+    return VACATION_THEMES[vacation?.name] || DEFAULT_THEME;
   }, [vacation]);
 
   const fetchVacationData = useCallback(async () => {
@@ -62,8 +67,6 @@ function App() {
       )}&group_by=${encodeURIComponent(
         "description,start_date,end_date,zones"
       )}&limit=20`;
-
-      await new Promise((resolve) => setTimeout(resolve, 500)); // Simulate network delay
 
       const response = await fetch(url);
       if (!response.ok)
@@ -175,6 +178,7 @@ function App() {
     <main className="min-h-screen bg-zinc-950 text-white font-sans flex flex-col items-center justify-center p-4 relative antialiased overflow-hidden">
       <div className="absolute top-0 right-0 p-4 z-20">
         <button
+          type="button"
           onClick={() => setIsSettingsOpen(true)}
           className="p-3 rounded-full text-zinc-400 hover:text-white hover:bg-zinc-800/50 transition-all duration-200"
           aria-label="Ouvrir les paramètres"
