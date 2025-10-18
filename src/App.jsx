@@ -154,22 +154,16 @@ function App() {
     }
 
     return (
-      <div
-        className={`z-10 w-full flex items-center justify-center transition-opacity duration-700 ${
-          showContent ? "opacity-100" : "opacity-0 pointer-events-none"
-        }`}
-      >
-        <div className="w-full max-w-2xl mx-auto flex flex-col items-center gap-8">
-          <h1 className="text-4xl md:text-5xl font-bold text-center">
-            <span
-              className={`text-transparent bg-clip-text bg-gradient-to-r ${theme.gradient}`}
-            >
-              {vacation.name}
-            </span>
-            <span className="ml-3 text-4xl">{theme.emoji}</span>
-          </h1>
-          <VacationProgress vacation={vacation} theme={theme} />
-        </div>
+      <div className="w-full max-w-2xl mx-auto flex flex-col items-center gap-8">
+        <h1 className="text-4xl md:text-5xl font-bold text-center">
+          <span
+            className={`text-transparent bg-clip-text bg-gradient-to-r ${theme.gradient}`}
+          >
+            {vacation.name}
+          </span>
+          <span className="ml-3 text-4xl">{theme.emoji}</span>
+        </h1>
+        <VacationProgress vacation={vacation} theme={theme} />
       </div>
     );
   };
@@ -187,13 +181,27 @@ function App() {
         </button>
       </div>
 
-      {isLoading ? (
-        <div className="text-zinc-400 text-xl animate-pulse">
+      {/* Loading text */}
+      <div
+        className={`absolute transition-opacity duration-500 ${
+          isLoading ? "opacity-100" : "opacity-0 pointer-events-none"
+        }`}
+      >
+        <div className="text-zinc-400 text-xl animate-pulse text-center">
           Chargement des données...
         </div>
-      ) : (
-        renderContent()
-      )}
+      </div>
+
+      {/* Content */}
+      <div
+        className={`w-full transition-opacity duration-700 ${
+          !isLoading && showContent
+            ? "opacity-100"
+            : "opacity-0 pointer-events-none"
+        }`}
+      >
+        {renderContent()}
+      </div>
 
       <SettingsDialog
         isOpen={isSettingsOpen}
