@@ -174,7 +174,7 @@ function App() {
         <button
           type="button"
           onClick={() => setIsSettingsOpen(true)}
-          className="p-3 rounded-full text-zinc-400 hover:text-white hover:bg-zinc-800/50 transition-all duration-200"
+          className="p-3 rounded-full text-zinc-400 hover:text-white hover:bg-zinc-800/50 transition-all duration-200 outline-none focus-visible:ring-2 focus-visible:ring-zinc-600"
           aria-label="Ouvrir les paramètres"
         >
           <Settings className="w-6 h-6" />
