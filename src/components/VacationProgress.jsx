@@ -55,15 +55,17 @@ export default function VacationProgress({ vacation, theme }) {
   const isOnVacation = progress >= 100;
   const themeGradient = theme.gradient || "";
 
+  const displayProgress = isOnVacation ? 100 : truncateToDecimals(progress, 4);
+
   return (
     <div className="w-full flex flex-col items-center gap-6">
       <h2 className="text-6xl md:text-8xl font-bold text-white tracking-tighter">
-        {isOnVacation ? "100" : truncateToDecimals(progress, 4)}%
+        {displayProgress}%
       </h2>
       <div className="w-full bg-zinc-700/50 rounded-full h-6 overflow-hidden border border-zinc-600/50">
         <div
           className={`relative h-full rounded-full bg-gradient-to-r ${themeGradient} transition-all duration-1000 ease-out overflow-hidden`}
-          style={{ width: `${progress}%` }}
+          style={{ width: `${displayProgress}%` }}
         >
           <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-r from-transparent via-white/30 to-transparent animate-[shimmer_3s_1s_infinite_backwards]"></div>
         </div>

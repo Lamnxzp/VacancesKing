@@ -37,4 +37,4 @@ npm run dev
 
 <h2 id="credits">Crédits</h2>
 
-- [API Calendrier Scolaire](https://www.data.gouv.fr/dataservices/api-calendrier-scolaire/)
+- [Dataset "Le calendrier scolaire"](https://www.data.gouv.fr/datasets/le-calendrier-scolaire/)
