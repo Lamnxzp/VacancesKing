@@ -65,7 +65,7 @@ export default function VacationProgress({ vacation, theme }) {
           className={`relative h-full rounded-full bg-gradient-to-r ${themeGradient} transition-all duration-1000 ease-out overflow-hidden`}
           style={{ width: `${progress}%` }}
         >
-          <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-r from-transparent via-white/30 to-transparent animate-[shimmer_3s_infinite]"></div>
+          <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-r from-transparent via-white/30 to-transparent animate-[shimmer_3s_1s_infinite_backwards]"></div>
         </div>
       </div>
 
