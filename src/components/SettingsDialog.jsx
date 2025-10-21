@@ -14,7 +14,7 @@ import {
 import { useState, useEffect } from "react";
 import { DateTimePicker } from "./DateTimePicker.jsx";
 import { getSchoolYear } from "@/lib/utils.js";
-import { RotateCcw, X, Settings2 } from "lucide-react";
+import { RotateCcw, X, Settings } from "lucide-react";
 
 const SETTINGS_TABS = [
   { id: "general-tab", label: "Général" },
@@ -111,7 +111,7 @@ export default function SettingsDialog({ isOpen, onClose }) {
               {/* Sidebar */}
               <div className="w-full md:w-64 bg-zinc-950 border-b md:border-b-0 md:border-r border-white/10 p-4 md:p-6 flex flex-col">
                 <DialogTitle className="flex items-center gap-2 text-[22px] font-bold text-white mb-4 md:mb-6">
-                  <Settings2 className="w-6 h-6" strokeWidth={1.5} />
+                  <Settings className="w-6 h-6" />
                   Paramètres
                 </DialogTitle>
 
