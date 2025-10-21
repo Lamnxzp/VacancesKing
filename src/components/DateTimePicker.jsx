@@ -7,7 +7,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { TimePicker } from "./TimePicker/TimePicker.jsx";
+import { TimePicker } from "@/components/TimePicker/TimePicker.jsx";
 
 export function DateTimePicker({
   value,

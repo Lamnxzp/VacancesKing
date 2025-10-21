@@ -14,6 +14,7 @@ import {
 import { useState, useEffect } from "react";
 import { DateTimePicker } from "./DateTimePicker.jsx";
 import { getSchoolYear } from "@/lib/utils.js";
+import { RotateCcw } from "lucide-react";
 
 const SETTINGS_TABS = [
   { id: "general-tab", label: "Général" },
@@ -214,6 +215,30 @@ export default function SettingsDialog({ isOpen, onClose }) {
                     </h3>
                   </div>
 
+                  <div className="bg-blue-900/20 border border-blue-500/30 text-blue-200 text-sm rounded-xl p-4 flex items-start gap-3 [&_p]:leading-relaxed">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      strokeWidth={1.5}
+                      stroke="currentColor"
+                      className="w-6 h-6 flex-shrink-0 mt-[3px]"
+                      aria-hidden="true"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="m11.25 11.25l.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0a9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z"
+                      />
+                    </svg>
+                    <p>
+                      Les dates des vacances sont récupérées automatiquement.
+                      Modifiez-les ici uniquement si elles ne correspondent pas
+                      à votre situation (ex: heure de fin des cours spécifique,
+                      départ anticipé, etc.).
+                    </p>
+                  </div>
+
                   <div className="space-y-3">
                     {VACATION_NAMES.map((vacationName) => (
                       <Disclosure
@@ -234,8 +259,9 @@ export default function SettingsDialog({ isOpen, onClose }) {
                                       e.stopPropagation(); // Prevent disclosure from toggling
                                       handleResetVacation(vacationName);
                                     }}
-                                    className="px-3 py-1 bg-zinc-800 border border-white/10 rounded-lg text-white/60 hover:text-white hover:border-white/20 transition-all duration-200 text-xs"
+                                    className="flex items-center gap-1.5 text-xs font-medium text-zinc-400 hover:text-white transition-all duration-200"
                                   >
+                                    <RotateCcw className="w-3.5 h-3.5" />
                                     Réinitialiser
                                   </button>
                                 )}
