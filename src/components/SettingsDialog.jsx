@@ -21,15 +21,6 @@ const SETTINGS_TABS = [
   { id: "dates-tab", label: "Dates" },
 ];
 
-const VACATION_NAMES = [
-  "Vacances de la Toussaint",
-  "Vacances de Noël",
-  "Vacances d'Hiver",
-  "Vacances de Printemps",
-  "Pont de l'Ascension",
-  "Début des Vacances d'Été",
-];
-
 const ROUNDING_OPTIONS = [
   {
     id: "floor",
@@ -48,7 +39,9 @@ const ROUNDING_OPTIONS = [
   },
 ];
 
-export default function SettingsDialog({ isOpen, onClose }) {
+export default function SettingsDialog({ isOpen, onClose, vacations = [] }) {
+  const vacationNames = vacations.map((v) => v.name);
+
   const [settings, setSettings] = useState({
     zone: "C",
     vacationOverrides: {},
@@ -209,7 +202,7 @@ export default function SettingsDialog({ isOpen, onClose }) {
                   </div>
 
                   <div className="space-y-3">
-                    {VACATION_NAMES.map((vacationName) => (
+                    {vacationNames.map((vacationName) => (
                       <Disclosure
                         key={vacationName}
                         as="div"

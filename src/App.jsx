@@ -40,6 +40,7 @@ const DEFAULT_THEME = {
 
 function App() {
   const [vacation, setVacation] = useState(null);
+  const [vacations, setVacations] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [error, setError] = useState(null);
@@ -62,6 +63,8 @@ function App() {
         "https://data.education.gouv.fr/api/explore/v2.1/catalog/datasets/fr-en-calendrier-scolaire/records";
       const url = `${baseUrl}?refine=zones:${encodeURIComponent(
         `Zone ${zone}`
+      )}&where=${encodeURIComponent(
+        'population != "Enseignants"'
       )}&refine=annee_scolaire:${encodeURIComponent(
         schoolYear
       )}&group_by=${encodeURIComponent(
@@ -88,6 +91,8 @@ function App() {
           };
         })
         .sort((a, b) => a.start - b.start);
+
+      setVacations(sortedVacations);
 
       const now = new Date();
       const currentVacation = sortedVacations.find(
@@ -233,6 +238,7 @@ function App() {
           setIsSettingsOpen(false);
           fetchVacationData(); // Refresh data when dialog closes
         }}
+        vacations={vacations}
       />
     </main>
   );
