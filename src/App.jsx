@@ -27,7 +27,7 @@ const VACATION_THEMES = {
     gradient: "from-sky-400 to-indigo-400",
     emoji: "☁️",
   },
-  "Début des Vacances d'Été": {
+  "Vacances d'Été": {
     gradient: "from-yellow-300 to-orange-400",
     emoji: "☀️",
   },
