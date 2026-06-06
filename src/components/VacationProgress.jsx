@@ -6,7 +6,7 @@ export default function VacationProgress({ vacation, theme }) {
   const [timeLeft, setTimeLeft] = useState("");
 
   useEffect(() => {
-    if (!vacation || vacation.current) {
+    if (!vacation) {
       setProgress(100);
       return;
     }
@@ -17,8 +17,15 @@ export default function VacationProgress({ vacation, theme }) {
 
     const calculateProgress = () => {
       const now = new Date().getTime();
-      const start = vacation.last.getTime();
-      const end = vacation.start.getTime();
+      let start, end;
+
+      if (vacation.current) {
+        start = vacation.start.getTime();
+        end = vacation.end.getTime();
+      } else {
+        start = vacation.last.getTime();
+        end = vacation.start.getTime();
+      }
 
       if (now >= end) {
         setProgress(100);
@@ -52,20 +59,21 @@ export default function VacationProgress({ vacation, theme }) {
     return () => clearInterval(interval);
   }, [vacation]);
 
-  const isOnVacation = progress >= 100;
+  const isOnVacation = vacation?.current;
+  const isFinished = progress >= 100 && !isOnVacation;
   const themeGradient = theme.gradient || "";
 
-  const displayProgress = isOnVacation ? 100 : truncateToDecimals(progress, 4);
+  const displayProgress = truncateToDecimals(progress, 4);
 
   return (
     <div className="w-full flex flex-col items-center gap-6">
       <h2 className="text-6xl md:text-8xl font-bold text-white tracking-tighter">
-        {displayProgress}%
+        {isFinished ? 100 : displayProgress}%
       </h2>
       <div className="w-full bg-zinc-700/50 rounded-full h-6 overflow-hidden border border-zinc-600/50">
         <div
           className={`relative h-full rounded-full bg-gradient-to-r ${themeGradient} transition-all duration-1000 ease-out overflow-hidden`}
-          style={{ width: `${displayProgress}%` }}
+          style={{ width: `${isFinished ? 100 : displayProgress}%` }}
         >
           <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-r from-transparent via-white/30 to-transparent animate-[shimmer_3s_1s_infinite_backwards]"></div>
         </div>
@@ -73,6 +81,25 @@ export default function VacationProgress({ vacation, theme }) {
 
       <div className="text-2xl md:text-3xl font-medium text-zinc-300">
         {isOnVacation ? (
+          <div className="flex flex-col items-center gap-2">
+            <div>
+              <span
+                className={`text-transparent bg-clip-text bg-gradient-to-r ${themeGradient}`}
+              >
+                En vacances !
+              </span>
+              <span> 🎉</span>
+            </div>
+            <div className="text-xl md:text-2xl opacity-80 mt-2">
+              Se termine dans{" "}
+              <span
+                className={`font-medium text-transparent bg-clip-text bg-gradient-to-r ${themeGradient}`}
+              >
+                {timeLeft}
+              </span>
+            </div>
+          </div>
+        ) : isFinished ? (
           <>
             <span
               className={`text-transparent bg-clip-text bg-gradient-to-r ${themeGradient}`}
