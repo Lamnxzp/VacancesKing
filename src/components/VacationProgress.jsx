@@ -49,7 +49,36 @@ export default function VacationProgress({ vacation, theme }) {
       } else if (remainingTime < 24 * 60 * 60 * 1000) {
         setTimeLeft(`${Math.floor(remainingTime / (60 * 60 * 1000))}h`);
       } else {
-        setTimeLeft(`${roundMethod(remainingTime / (24 * 60 * 60 * 1000))}j`);
+        let totalDays = roundMethod(remainingTime / (24 * 60 * 60 * 1000));
+        const parts = [];
+
+        if (totalDays >= 30) {
+          const months = Math.floor(totalDays / 30);
+          totalDays %= 30;
+          parts.push(`${months} mois`);
+        }
+
+        if (totalDays >= 7) {
+          const weeks = Math.floor(totalDays / 7);
+          totalDays %= 7;
+          parts.push(`${weeks} semaine${weeks > 1 ? "s" : ""}`);
+        }
+
+        if (totalDays > 0) {
+          parts.push(`${totalDays} jour${totalDays > 1 ? "s" : ""}`);
+        }
+
+        if (parts.length === 0) {
+          setTimeLeft("0 jour");
+        } else if (parts.length === 1) {
+          setTimeLeft(parts[0]);
+        } else if (parts.length === 2) {
+          setTimeLeft(`${parts[0]} et ${parts[1]}`);
+        } else {
+          setTimeLeft(
+            `${parts.slice(0, -1).join(", ")} et ${parts[parts.length - 1]}`
+          );
+        }
       }
     };
 
