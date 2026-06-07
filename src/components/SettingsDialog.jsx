@@ -40,8 +40,6 @@ const ROUNDING_OPTIONS = [
 ];
 
 export default function SettingsDialog({ isOpen, onClose, vacations = [] }) {
-  const vacationNames = vacations.map((v) => v.name);
-
   const [settings, setSettings] = useState({
     zone: "C",
     vacationOverrides: {},
@@ -202,101 +200,174 @@ export default function SettingsDialog({ isOpen, onClose, vacations = [] }) {
                   </div>
 
                   <div className="space-y-3">
-                    {vacationNames.map((vacationName) => (
-                      <Disclosure
-                        key={vacationName}
-                        as="div"
-                        className="bg-zinc-900/50 rounded-xl ring-1 ring-white/10 transition-all duration-300"
-                      >
-                        {({ open }) => (
-                          <>
-                            <DisclosureButton className="w-full flex items-center justify-between p-4 text-left text-white/90">
-                              <span className="font-medium">
-                                {vacationName}
-                              </span>
-                              <div className="flex items-center gap-4">
-                                {settings.vacationOverrides[vacationName] && (
-                                  <button
-                                    onClick={(e) => {
-                                      e.stopPropagation(); // Prevent disclosure from toggling
-                                      handleResetVacation(vacationName);
-                                    }}
-                                    className="flex items-center gap-1.5 text-xs font-medium text-zinc-400 hover:text-white transition-all duration-200"
-                                  >
-                                    <RotateCcw className="w-3.5 h-3.5" />
-                                    Réinitialiser
-                                  </button>
-                                )}
-                                <svg
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  fill="none"
-                                  viewBox="0 0 24 24"
-                                  strokeWidth={1.5}
-                                  stroke="currentColor"
-                                  className={`w-5 h-5 text-white/60 transition-transform duration-200 ${open ? "transform rotate-180" : ""}`}
-                                >
-                                  <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    d="m19.5 8.25-7.5 7.5-7.5-7.5"
-                                  />
-                                </svg>
-                              </div>
-                            </DisclosureButton>
+                    {vacations.map((vacation) => {
+                      const isModified =
+                        !!settings.vacationOverrides[vacation.name];
+                      const startDate =
+                        isModified &&
+                        settings.vacationOverrides[vacation.name].start_date
+                          ? new Date(
+                              settings.vacationOverrides[vacation.name]
+                                .start_date
+                            )
+                          : vacation.start;
+                      const endDate =
+                        isModified &&
+                        settings.vacationOverrides[vacation.name].end_date
+                          ? new Date(
+                              settings.vacationOverrides[vacation.name].end_date
+                            )
+                          : vacation.end;
 
-                            <DisclosurePanel
-                              transition
-                              className="p-6 border-t border-white/10 origin-top duration-300 ease-in-out data-[closed]:-translate-y-1 data-[closed]:opacity-0"
-                            >
-                              <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
-                                <DateTimePicker
-                                  key={"start-" + vacationName}
-                                  label="Date de début"
-                                  value={
-                                    settings.vacationOverrides[vacationName]
-                                      ?.start_date || ""
-                                  }
-                                  onChange={(value) =>
-                                    handleDateChange(
-                                      vacationName,
-                                      "start_date",
-                                      value
-                                    )
-                                  }
-                                  startMonth={
-                                    new Date(getSchoolYear(true)[0], 0)
-                                  }
-                                  endMonth={
-                                    new Date(getSchoolYear(true)[1], 11)
-                                  }
-                                />
-                                <DateTimePicker
-                                  key={"end-" + vacationName}
-                                  label="Date de fin"
-                                  value={
-                                    settings.vacationOverrides[vacationName]
-                                      ?.end_date || ""
-                                  }
-                                  onChange={(value) =>
-                                    handleDateChange(
-                                      vacationName,
-                                      "end_date",
-                                      value
-                                    )
-                                  }
-                                  startMonth={
-                                    new Date(getSchoolYear(true)[0], 0)
-                                  }
-                                  endMonth={
-                                    new Date(getSchoolYear(true)[1], 11)
-                                  }
-                                />
-                              </div>
-                            </DisclosurePanel>
-                          </>
-                        )}
-                      </Disclosure>
-                    ))}
+                      const formatDate = (date) =>
+                        date
+                          ? new Intl.DateTimeFormat("fr-FR", {
+                              day: "numeric",
+                              month: "short",
+                            }).format(date)
+                          : "";
+
+                      return (
+                        <Disclosure
+                          key={vacation.name}
+                          as="div"
+                          className={`bg-zinc-900/50 rounded-xl ring-1 transition-all duration-300 ${isModified ? "ring-blue-500/50 bg-blue-900/10" : "ring-white/10"}`}
+                        >
+                          {({ open }) => (
+                            <>
+                              <DisclosureButton className="w-full flex items-center justify-between p-4 text-left text-white/90">
+                                <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-3 overflow-hidden">
+                                  <span className="font-medium truncate">
+                                    {vacation.name}
+                                  </span>
+                                  <div className="flex items-center gap-2">
+                                    <span className="text-xs text-zinc-400 whitespace-nowrap">
+                                      {formatDate(startDate)} -{" "}
+                                      {formatDate(endDate)}
+                                    </span>
+                                    {isModified && (
+                                      <span className="inline-flex items-center px-2 py-1 rounded-full bg-blue-500/20 text-blue-300 text-[11px] font-medium leading-none">
+                                        Modifié
+                                      </span>
+                                    )}
+                                  </div>
+                                </div>
+                                <div className="flex items-center gap-4 flex-shrink-0 ml-2">
+                                  {isModified && (
+                                    <button
+                                      onClick={(e) => {
+                                        e.stopPropagation(); // Prevent disclosure from toggling
+                                        handleResetVacation(vacation.name);
+                                      }}
+                                      className="flex items-center gap-1.5 text-xs font-medium text-zinc-400 hover:text-white transition-all duration-200"
+                                    >
+                                      <RotateCcw className="w-3.5 h-3.5" />
+                                      <span className="hidden sm:inline">
+                                        Réinitialiser
+                                      </span>
+                                    </button>
+                                  )}
+                                  <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    strokeWidth={1.5}
+                                    stroke="currentColor"
+                                    className={`w-5 h-5 text-white/60 transition-transform duration-200 ${open ? "transform rotate-180" : ""}`}
+                                  >
+                                    <path
+                                      strokeLinecap="round"
+                                      strokeLinejoin="round"
+                                      d="m19.5 8.25-7.5 7.5-7.5-7.5"
+                                    />
+                                  </svg>
+                                </div>
+                              </DisclosureButton>
+
+                              <DisclosurePanel
+                                transition
+                                className="p-6 border-t border-white/10 origin-top duration-300 ease-in-out data-[closed]:-translate-y-1 data-[closed]:opacity-0"
+                              >
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
+                                  <DateTimePicker
+                                    key={"start-" + vacation.name}
+                                    label={
+                                      <span className="flex items-center gap-2 mb-1">
+                                        Date de début
+                                        {settings.vacationOverrides[
+                                          vacation.name
+                                        ]?.start_date && (
+                                          <span
+                                            className="w-1.5 h-1.5 rounded-full bg-blue-400"
+                                            title="Cette date a été modifiée"
+                                          />
+                                        )}
+                                      </span>
+                                    }
+                                    value={
+                                      settings.vacationOverrides[vacation.name]
+                                        ?.start_date ||
+                                      (vacation.start
+                                        ? vacation.start.toISOString()
+                                        : "")
+                                    }
+                                    onChange={(value) =>
+                                      handleDateChange(
+                                        vacation.name,
+                                        "start_date",
+                                        value
+                                      )
+                                    }
+                                    startMonth={
+                                      new Date(getSchoolYear(true)[0], 0)
+                                    }
+                                    endMonth={
+                                      new Date(getSchoolYear(true)[1], 11)
+                                    }
+                                  />
+                                  <DateTimePicker
+                                    key={"end-" + vacation.name}
+                                    label={
+                                      <span className="flex items-center gap-2 mb-1">
+                                        Date de fin
+                                        {settings.vacationOverrides[
+                                          vacation.name
+                                        ]?.end_date && (
+                                          <span
+                                            className="w-1.5 h-1.5 rounded-full bg-blue-400"
+                                            title="Cette date a été modifiée"
+                                          />
+                                        )}
+                                      </span>
+                                    }
+                                    value={
+                                      settings.vacationOverrides[vacation.name]
+                                        ?.end_date ||
+                                      (vacation.end
+                                        ? vacation.end.toISOString()
+                                        : "")
+                                    }
+                                    onChange={(value) =>
+                                      handleDateChange(
+                                        vacation.name,
+                                        "end_date",
+                                        value
+                                      )
+                                    }
+                                    startMonth={
+                                      new Date(getSchoolYear(true)[0], 0)
+                                    }
+                                    endMonth={
+                                      new Date(getSchoolYear(true)[1], 11)
+                                    }
+                                  />
+                                </div>
+                              </DisclosurePanel>
+                            </>
+                          )}
+                        </Disclosure>
+                      );
+                    })}
                   </div>
                 </TabPanel>
               </TabPanels>
